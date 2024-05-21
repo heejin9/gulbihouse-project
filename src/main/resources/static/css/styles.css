@@ -1,0 +1,105 @@
+/* main화면 */
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Jua&family=Moirai+One&family=Noto+Sans+KR:wght@100..900&display=swap'); */
+
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  /* font-family: 'GmarketSansMedium'; */
+  margin: 0;
+  padding: 0;
+  color: #153F76;
+}
+
+.container {
+  font-family: "Noto Sans KR", sans-serif;
+  max-width: 480px;
+  min-height: 100vh;
+  background-color: #FCF6F5;
+  /* 흰색 배경 */
+  margin: 0 auto;
+  /* 페이지 중앙 정렬을 위해 사용 */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* 수직 중앙 정렬 */
+  justify-content: space-between;
+  /* 상단 및 하단 네비바 고정에 유용 */
+  text-align: center;
+  /* 내용을 수평 가운데 정렬 */
+
+}
+
+/* 네비바1 */
+.top-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; /* 중앙 정렬로 변경 */
+  position: relative; /* 상대적 위치 지정 */
+  padding: 10px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.notification {
+  position: absolute;
+  right: 25px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.notification img {
+  max-width: 100%;
+  height: auto;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin: 30px auto;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  padding: 5px;
+  background-color: #fff;
+  width: 87%;
+}
+
+.search-bar input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  padding: 5px;
+}
+
+.search-bar .search-icon {
+  font-size: 20px;
+  margin-right: 5px;
+  color: #333;
+  padding-left: 15px;
+}
+
+/* 네비바2 */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  background-color: #f2f2f2;
+  padding: 10px 0;
+  /* position: absolute; */
+
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: #333;
+  font-size: 24px;
+}

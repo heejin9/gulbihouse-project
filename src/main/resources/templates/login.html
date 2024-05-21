@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        form {
+            margin: auto
+        }
+
+        .logo img {
+            width: 195px;
+            height: 155px;
+        }
+
+        .input-field {
+            width: 310px;
+            padding: 10px;
+            /* 안쪽 여백을 설정 */
+            margin: 10px 0;
+            /* 위아래 여백을 설정 */
+            border: 1px solid #ccc;
+            border-radius: 50px;
+        }
+
+        .options {
+            /* display: flex; */
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .option-btn {
+            border: none;
+            background-color: #FCF6F5;
+            color: #666;
+            padding: 5px 10px;
+            text-align: center;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            text-decoration: none;
+            /* 밑줄 제거 */
+            display: inline-block;
+            /* 가로 정렬 */
+        }
+
+        .login-btn {
+            background-color: #153F76;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 335px;
+            margin: 15px auto;
+        }
+
+        .kakaologin-btn {
+            color: #666;
+            width: 335px;
+            padding: 10px;
+            /* 안쪽 여백을 설정 */
+            margin: 70px auto;
+            /* 위아래 여백을 설정 */
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            background-color: white;
+            display: flex;
+            /* 수평 정렬을 위해 flex 사용 */
+            align-items: center;
+            /* 수직 가운데 정렬 */
+            justify-content: center;
+            /* 수평 가운데 정렬 */
+        }
+
+        .kakaologin-btn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .login-keep {
+            display: flex;
+            align-items: center;
+            margin-left: 80px;
+            /* 필요에 따라 조정 */
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <form action="/login" method="POST">
+        <div class="logo">
+            <img th:src="@{/images/logo2.png}" alt="Logo">
+        </div>
+        <div>
+            <input type="text" placeholder="이메일" class="input-field" name="username">
+            <input type="password" placeholder="비밀번호" class="input-field" name="password">
+        </div>
+        <div class="login-keep">
+            <label>
+                <input type="checkbox"> 로그인 상태 유지하기
+            </label>
+        </div>
+        <button class="login-btn">로그인하기</button>
+        <div class="options">
+            <a th:href="@{/signup}" class="option-btn">회원가입</a>|
+            <a href="find-id.html" class="option-btn">아이디찾기</a>|
+            <a href="searchpassword.html" class="option-btn">비밀번호찾기</a>
+        </div>
+        <button class="kakaologin-btn">
+            <img src="/images/kakao2.png" alt="Kakao Emoticon">
+            <span>카카오톡으로 시작하기</span>
+        </button>
+    </form>
+</div>
+</body>
+
+</html>

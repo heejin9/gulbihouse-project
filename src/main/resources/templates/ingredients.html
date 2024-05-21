@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>식재료 관리</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <style>
+        .filter-buttons-container {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin: 20px 10px;
+              position: relative;
+          }
+
+          .filter-buttons {
+              display: flex;
+              justify-content: space-around;
+              background-color: #E0E0E0;
+              border-radius: 20px;
+              padding: 5px;
+              flex-grow: 1;
+          }
+
+          .filter-buttons button {
+              flex-grow: 1;
+              padding: 10px 0;
+              border: none;
+              border-radius: 20px;
+              background-color: #E0E0E0;
+              color: #333;
+              font-size: 16px;
+              cursor: pointer;
+              margin: 0 5px;
+          }
+
+          .filter-buttons .active {
+              background-color: #153F76;
+              color: white;
+          }
+
+          .sort-options {
+              position: absolute;
+              right: 0;
+              bottom: -30px;
+              background-color: transparent;
+          }
+
+          .sort-options select {
+              border: none;
+              background-color: transparent;
+              font-size: 16px;
+              color: #153F76;
+          }
+
+          .ingredients-section {
+              flex-grow: 1;
+              padding: 20px;
+          }
+
+          .ingredients-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 10px; /* 간격 조정 */
+          }
+
+          .ingredients-table th, .ingredients-table td {
+              border: 1px solid #ccc;
+              padding: 10px;
+              text-align: left;
+          }
+
+          .ingredients-table th {
+              background-color: #f2f2f2;
+          }
+
+          .add-btn-container {
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              margin-bottom: 20px;
+              /* position: fixed; */
+              bottom: 70px;
+              right: 20px;
+              z-index: 10;
+          }
+
+          .add-btn, .delete-btn {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              background-color: #153F76;
+              color: #fff;
+              justify-content: center;
+              align-items: center;
+              font-size: 24px;
+              display: flex;
+              cursor: pointer;
+              margin: 0 10px;
+          }
+
+          .delete-btn {
+              background-color: #E0E0E0;
+          }
+
+          .modal {
+              display: none;
+              position: fixed;
+              z-index: 1;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              overflow: auto;
+              background-color: rgba(0, 0, 0, 0.4);
+          }
+
+          .modal-content {
+              background-color: #fefefe;
+              margin: 15% auto;
+              padding: 20px;
+              border: 1px solid #888;
+              width: 80%;
+              max-width: 400px;
+              border-radius: 10px;
+              position: relative;
+          }
+
+          .modal-form input[type="submit"] {
+              background-color: #153F76; /* 원하는 색상으로 변경 */
+              color: white; /* 텍스트 색상 */
+
+          }
+
+          .modal-header {
+              display: flex;
+              justify-content: flex-end;
+              margin-bottom: 10px;
+          }
+
+          .modal-close {
+              color: #aaa;
+              font-size: 28px;
+              font-weight: bold;
+              cursor: pointer;
+          }
+
+          .modal-close:hover, .modal-close:focus {
+              color: black;
+              text-decoration: none;
+          }
+
+          .modal-form {
+              display: flex;
+              flex-direction: column;
+          }
+
+          .modal-form label {
+              display: block;
+              margin-bottom: 5px;
+          }
+
+          .modal-form input, .modal-form select {
+              width: 100%;
+              padding: 10px;
+              margin-bottom: 10px;
+              border: 1px solid #ccc;
+              border-radius: 20px;
+              box-sizing: border-box;
+          }
+
+          .confirm-modal {
+              display: none;
+              position: fixed;
+              z-index: 2;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              overflow: auto;
+              background-color: rgba(0, 0, 0, 0.4);
+          }
+
+          .confirm-modal-content {
+              background-color: #fefefe;
+              margin: 25% auto;
+              padding: 20px;
+              border: 1px solid #888;
+              width: 80%;
+              max-width: 300px;
+              border-radius: 10px;
+              position: relative;
+          }
+
+          .confirm-modal-header {
+              display: flex;
+              justify-content: center;
+              margin-bottom: 10px;
+          }
+
+          .confirm-modal-buttons {
+              display: flex;
+              justify-content: space-around;
+          }
+
+          .confirm-modal-buttons button {
+              padding: 10px 20px;
+              border: none;
+              border-radius: 20px;
+              cursor: pointer;
+              font-size: 16px;
+          }
+
+          .confirm-delete-btn {
+              background-color: #153F76;
+              color: white;
+          }
+
+          .confirm-cancel-btn {
+              background-color: #E0E0E0;
+              color: white;
+          }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-nav">
+        <div class="logo">gulbi house</div>
+        <div class="notification"><img src="images/Bell.png"></div>
+    </div>
+    <div class="search-bar">
+        <span class="search-icon"><img src="/images/search.png"></span>
+        <input type="text" placeholder="Search">
+    </div>
+    <div class="filter-buttons-container">
+        <div class="filter-buttons">
+            <button class="active" onclick="filterItems('all', this)">모두</button>
+            <button onclick="filterItems('REFRIGERATED', this)">냉장</button>
+            <button onclick="filterItems('FROZEN', this)">냉동</button>
+            <button onclick="filterItems('ROOM_TEMPERATURE', this)">실온</button>
+        </div>
+        <div class="sort-options">
+            <select id="sort-select" onchange="sortItems()">
+                <option value="name">이름 가나다순</option>
+                <option value="expiry-asc">유통 기한 빠른순</option>
+                <option value="expiry-desc">유통 기한 느린순</option>
+            </select>
+        </div>
+    </div>
+    <div class="ingredients-section">
+        <table class="ingredients-table">
+            <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>식재료</th>
+                <th>수량</th>
+                <th>유통기한</th>
+                <th>보관</th>
+            </tr>
+            </thead>
+            <tbody id="ingredients-list">
+            <tr th:each="ingredient : ${ingredients}" th:data-id="${ingredient.id}"
+                th:data-storage="${ingredient.status}" onclick="rowClick(event, this)">
+                <td><input type="checkbox" class="select-item" onclick="event.stopPropagation();"></td>
+                <td th:text="${ingredient.name}">식재료명</td>
+                <td th:text="${ingredient.quantity}">수량</td>
+                <td th:text="${ingredient.expirationDate}">유통기한</td>
+                <td th:text="${ingredient.status.getDesc()}">보관상태</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="add-btn-container">
+        <div class="delete-btn" id="delete-btn">-</div>
+        <div class="add-btn" id="add-btn">+</div>
+    </div>
+    <div class="bottom-nav">
+        <a th:href="@{/home}"><img src="/images/Home.png"></a>
+        <a th:href="@{/food}"><img src="/images/carrot.png"></a>
+        <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
+        <a th:href="@{/events}"><img src="/images/calendar.png"></a>
+        <a th:href="@{/my}"><img src="/images/Profile.png"></a>
+    </div>
+</div>
+
+<!-- 추가 모달창 -->
+<div id="add-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-close">&times;</span>
+        </div>
+        <form class="modal-form" id="add-form" th:action="@{/ingredients/add}" method="post">
+            <label for="item-name">식재료명</label>
+            <input type="text" id="item-name" name="name" required>
+            <label for="item-quantity">수량</label>
+            <input type="number" id="item-quantity" name="quantity" step="0.5" required>
+            <label for="item-expiry">유통기한</label>
+            <input type="date" id="item-expiry" name="expirationDate" required>
+            <label for="item-location">보관</label>
+            <select id="item-location" name="status" required>
+                <option value="">선택하세요</option>
+                <option value="REFRIGERATED">냉장</option>
+                <option value="FROZEN">냉동</option>
+                <option value="ROOM_TEMPERATURE">실온</option>
+            </select>
+            <input type="submit" value="추가">
+        </form>
+    </div>
+</div>
+
+<!-- 수정 모달창 -->
+<div id="edit-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-close">&times;</span>
+        </div>
+        <form class="modal-form" id="edit-form" th:action="@{/ingredients/update}" method="post">
+            <input type="hidden" name="id" id="edit-item-id">
+            <label for="edit-item-name">식재료명</label>
+            <input type="text" id="edit-item-name" name="name" required>
+            <label for="edit-item-quantity">수량</label>
+            <input type="number" id="edit-item-quantity" name="quantity" step="0.5" required>
+            <label for="edit-item-expiry">유통기한</label>
+            <input type="date" id="edit-item-expiry" name="expirationDate" required>
+            <label for="edit-item-location">상태</label>
+            <select id="edit-item-location" name="status" required>
+                <option value="">선택하세요</option>
+                <option value="REFRIGERATED">냉장</option>
+                <option value="FROZEN">냉동</option>
+                <option value="ROOM_TEMPERATURE">실온</option>
+            </select>
+            <input type="submit" value="저장">
+        </form>
+    </div>
+</div>
+
+<!-- 삭제 확인 모달창 -->
+<div id="confirm-modal" class="confirm-modal">
+    <div class="confirm-modal-content">
+        <p>정말 삭제하시겠습니까?</p>
+        <div class="confirm-modal-buttons">
+            <button class="confirm-cancel-btn" id="confirm-cancel-btn">취소</button>
+            <button class="confirm-delete-btn" id="confirm-delete-btn">삭제</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const locationMap = {
+        REFRIGERATED: "냉장",
+        FROZEN: "냉동",
+        ROOM_TEMPERATURE: "실온"
+    };
+
+    var addBtn = document.getElementById("add-btn");
+    var addModal = document.getElementById("add-modal");
+    var editModal = document.getElementById("edit-modal");
+    var modalClose = document.getElementsByClassName("modal-close");
+    var deleteBtn = document.getElementById("delete-btn");
+    var confirmModal = document.getElementById("confirm-modal");
+    var confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+    var confirmCancelBtn = document.getElementById("confirm-cancel-btn");
+
+    addBtn.onclick = function() {
+        addModal.style.display = "block";
+    }
+
+    for (let i = 0; i < modalClose.length; i++) {
+        modalClose[i].onclick = function() {
+            this.closest('.modal').style.display = "none";
+        }
+    }
+
+    window.onclick = function(event) {
+        if (event.target == addModal) {
+            addModal.style.display = "none";
+        } else if (event.target == editModal) {
+            editModal.style.display = "none";
+        } else if (event.target == confirmModal) {
+            confirmModal.style.display = "none";
+        }
+    }
+
+    function filterItems(storage, button) {
+        var rows = document.querySelectorAll('#ingredients-list tr');
+        rows.forEach(row => {
+            if (storage === 'all' || row.getAttribute('data-storage') === storage) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        var buttons = document.querySelectorAll('.filter-buttons button');
+        buttons.forEach(btn => {
+            btn.classList.remove('active');
+        });
+        button.classList.add('active');
+    }
+
+    function sortItems() {
+        var sortBy = document.getElementById('sort-select').value;
+        var rows = Array.from(document.querySelectorAll('#ingredients-list tr'));
+
+        if (sortBy === 'name') {
+            rows.sort((a, b) => a.cells[1].textContent.localeCompare(b.cells[1].textContent));
+        } else if (sortBy === 'expiry-asc') {
+            rows.sort((a, b) => new Date(a.cells[3].textContent) - new Date(b.cells[3].textContent));
+        } else if (sortBy === 'expiry-desc') {
+            rows.sort((a, b) => new Date(b.cells[3].textContent) - new Date(a.cells[3].textContent));
+        }
+
+        var tbody = document.getElementById('ingredients-list');
+        tbody.innerHTML = '';
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+    function addItem(event) {
+        event.preventDefault();
+        var form = document.getElementById('add-form');
+        var name = form['name'].value;
+        var quantity = form['quantity'].value;
+        var expiry = form['expirationDate'].value;
+        var location = form['status'].value;
+
+        var tbody = document.getElementById('ingredients-list');
+        var row = document.createElement('tr');
+        row.setAttribute('data-storage', location);
+        row.onclick = function(event) { rowClick(event, this); };
+        row.innerHTML = `<td><input type="checkbox" class="select-item" onclick="event.stopPropagation();"></td>
+                        <td>${name}</td>
+                        <td>${quantity}</td>
+                        <td>${expiry}</td>
+                        <td>${locationMap[location]}</td>`;
+        tbody.appendChild(row);
+
+        form.reset();
+        addModal.style.display = "none";
+    }
+
+    function rowClick(event, row) {
+        if (event.target.tagName !== 'INPUT') {
+            var form = document.getElementById('edit-form');
+            form['id'].value = row.getAttribute('data-id'); // ID 설정
+            form['name'].value = row.cells[1].textContent;
+            form['quantity'].value = row.cells[2].textContent;
+            form['expirationDate'].value = row.cells[3].textContent;
+            form['status'].value = row.getAttribute('data-storage');
+            form.dataset.rowIndex = row.rowIndex;
+            editModal.style.display = "block";
+        }
+    }
+
+    function saveItem(event) {
+        event.preventDefault();
+        var form = document.getElementById('edit-form');
+        var rowIndex = form.dataset.rowIndex;
+        var row = document.querySelector(`#ingredients-list tr:nth-child(${rowIndex})`);
+        row.cells[1].textContent = form['name'].value;
+        row.cells[2].textContent = form['quantity'].value;
+        row.cells[3].textContent = form['expirationDate'].value;
+        var location = form['status'].value;
+        row.cells[4].textContent = locationMap[location];
+        row.setAttribute('data-storage', location);
+        editModal.style.display = "none";
+    }
+
+    function deleteSelectedItems() {
+    var checkboxes = document.querySelectorAll('.select-item:checked');
+    var deletePromises = [];
+    checkboxes.forEach(checkbox => {
+        var row = checkbox.closest('tr');
+        var id = row.getAttribute('data-id');
+        console.log('Deleting ingredient with id:', id); // 디버깅용 로그
+        if (id) {
+            deletePromises.push(deleteIngredientFromServer(id));
+            row.remove();
+        } else {
+            console.error('Failed to get ingredient ID for row', row);
+        }
+    });
+
+    Promise.all(deletePromises).then(() => {
+        confirmModal.style.display = "none";
+    });
+}
+
+function deleteIngredientFromServer(id) {
+    return fetch(`/ingredients/delete?id=${id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    }).then(response => {
+        if (!response.ok) {
+            console.error('Failed to delete ingredient:', id);
+        }
+    });
+}
+
+
+    deleteBtn.onclick = function() {
+        confirmModal.style.display = "block";
+    }
+
+    confirmDeleteBtn.onclick = deleteSelectedItems;
+
+    confirmCancelBtn.onclick = function() {
+        confirmModal.style.display = "none";
+    }
+
+    document.getElementById('select-all').addEventListener('click', function() {
+        var checkboxes = document.querySelectorAll('.select-item');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+</script>
+</body>
+</html>

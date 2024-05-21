@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 정보</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 10px auto;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #EFEFF0;
+            margin: 10px auto;
+            width: 85%;
+        }
+
+        .friend-list-title {
+            margin-left: 20px;
+        }
+
+        .btn-plus {
+            margin-left: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .d-flex {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin: auto;
+        }
+
+        .friend-list {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .friend-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 20px;
+            margin: auto;
+        }
+
+        .friend-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+
+        .friend-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #153F76;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .btn-modi {
+            background-color: #153F76;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 150px;
+            margin: 10px auto;
+        }
+
+        .btn-danger {
+            background-color: #153F76;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 335px;
+            margin: 50px auto;
+        }
+
+        .btn-danger:active {
+            background-color: gray;
+            border-color: gray;
+        }
+
+        .btn-primary {
+            background-color: #153F76;
+            border-color: #153F76;
+        }
+
+        .notification-section {
+            margin: 10px auto;
+            width: 80%;
+        }
+
+        .emoji-area {
+            margin-left: 10px;
+            margin-bottom: 30px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid gray;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+
+        .notification-item .emoji-area {
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .notification-item .text-area {
+            flex-grow: 1;
+            margin-right: 10px;
+            text-align: left;
+        }
+
+        .notification-item .switch-area {
+            flex-shrink: 0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 300px;
+            border-radius: 10px;
+        }
+
+        .modal-title {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            outline: none;
+        }
+
+        .btn-secondary,
+        .btn-primary {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        .btn-primary {
+            background-color: #153F76;
+            color: white;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="top-nav">
+        <div class="logo">gulbi house</div>
+        <div class="notification"><img src="images/Bell.png"></div>
+    </div>
+
+    <div class="profile-section">
+        <div class="profile-image">
+            <img src="https://via.placeholder.com/150" alt="Profile Image">
+        </div>
+        <h4>My Nickname</h4>
+        <button class="btn btn-modi" onclick="window.location.href='modify.html'">내 정보 수정</button>
+    </div>
+    <hr>
+    <div class="friend-section">
+        <div class="d-flex align-items-center mb-3">
+            <h4 class="friend-list-title">친구 목록</h4>
+            <button class="btn-plus" id="openModalBtn">+</button>
+        </div>
+        <ul class="friend-list">
+            <li class="friend-item">
+                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
+                <div class="friend-nickname">Friend 1</div>
+            </li>
+            <li class="friend-item">
+                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
+                <div class="friend-nickname">Friend 2</div>
+            </li>
+            <li class="friend-item">
+                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
+                <div class="friend-nickname">Friend 3</div>
+            </li>
+            <li class="friend-item">
+                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
+                <div class="friend-nickname">Friend 4</div>
+            </li>
+        </ul>
+    </div>
+    <!-- Modal -->
+    <div id="friendAddModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h5 class="modal-title">친구 추가</h5>
+            <form>
+                <div class="form-group">
+                    <label for="friendNickname" class="col-form-label">친구 닉네임</label>
+                    <input type="text" class="form-control" id="friendNickname">
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeModalBtn">취소</button>
+                <button type="button" class="btn btn-primary" id="addFriendBtn">추가</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification-section">
+        <div class="notification-item">
+            <div class="emoji-area"><img src="/img/bell.png"></div>
+            <div class="text-area">
+                <p style="font-weight: bold;">알림설정</p>
+                <p>Get important notifications...</p>
+            </div>
+            <div class="switch-area">
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+        <div class="notification-item">
+            <div class="emoji-area"><img src="/img/bell.png"></div>
+            <div class="text-area">
+                <p style="font-weight: bold;">알림설정</p>
+                <p>Get important notifications...</p>
+            </div>
+            <div class="switch-area">
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-danger">로그아웃</button>
+
+    <div class="bottom-nav">
+        <a th:href="@{/home}"><img src="/images/Home.png"></a>
+        <a th:href="@{/food}"><img src="/images/carrot.png"></a>
+        <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
+        <a th:href="@{/events}"><img src="/images/calendar.png"></a>
+        <a th:href="@{/my}"><img src="/images/Profile.png"></a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Modal 기능
+    var modal = document.getElementById("friendAddModal");
+    var openModalBtn = document.getElementById("openModalBtn");
+    var closeModalBtn = document.getElementById("closeModalBtn");
+    var span = document.getElementsByClassName("close")[0];
+
+    openModalBtn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    closeModalBtn.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // 친구 삭제 기능
+    const friendItems = document.querySelectorAll('.friend-item');
+    friendItems.forEach(friendItem => {
+        const friendImage = friendItem.querySelector('.friend-image');
+        friendImage.addEventListener('click', () => {
+            const confirmDelete = confirm('친구를 삭제하시겠습니까?');
+            if (confirmDelete) {
+                friendItem.remove();
+            }
+        });
+    });
+
+    // 친구 추가 기능
+    const addFriendBtn = document.getElementById('addFriendBtn');
+    const friendNickname = document.getElementById('friendNickname');
+    const friendList = document.querySelector('.friend-list');
+
+    addFriendBtn.addEventListener('click', () => {
+        const newNickname = friendNickname.value.trim();
+        if (newNickname) {
+            const newFriendItem = document.createElement('li');
+            newFriendItem.classList.add('friend-item');
+            newFriendItem.innerHTML = `
+                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
+                <div class="friend-nickname">${newNickname}</div>
+            `;
+            friendList.appendChild(newFriendItem);
+            friendNickname.value = '';
+            modal.style.display = "none";
+        }
+    });
+</script>
+</body>
+
+</html>

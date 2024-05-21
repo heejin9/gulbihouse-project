@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내정보 수정</title>
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <style>
+        .top-nav+.logo {
+            margin-top: -200px;
+            text-align: center;
+        }
+
+        .user-profile-section {
+            margin-top: -100px;
+        }
+
+        .user-profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 50px;
+            cursor: pointer;
+        }
+
+        .user-form-group {
+            margin: 20px 0;
+        }
+
+        .user-form-group label {
+            align-self: flex-start;
+            margin-left: calc(50% - 155px);
+            display: block;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .user-form-group input {
+            width: 310px;
+            padding: 10px;
+            border-radius: 50px;
+            border: 1px solid #ccc;
+        }
+
+        .user-form-group input[disabled] {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .user-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+        }
+
+        .user-modal-content {
+            background-color: #fefefe;
+            margin: 20% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            border-radius: 10px;
+        }
+
+        .modal-btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .user-btn {
+            padding: 10px;
+            border-radius: 50px;
+            border: none;
+            background-color: #153F76;
+            color: #fff;
+            cursor: pointer;
+            width: 335px;
+            margin-top: 50px;
+            margin-bottom: 20px;
+        }
+
+        .btn-danger {
+            background-color: transparent;
+            color: #153F76;
+            width: auto;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .modal-btn {
+            width: 100px;
+            padding: 10px;
+            border-radius: 50px;
+            border: none;
+            background-color: #153F76;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .password-error {
+            color: red;
+            font-size: 12px;
+            margin-left: calc(50% - 155px);
+            display: block;
+            text-align: left;
+        }
+
+        .password-strength {
+            font-size: 12px;
+            margin-left: calc(50% - 155px);
+            display: block;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="top-nav">
+        <div class="logo">gulbi house</div>
+        <div class="notification"><img src="images/Bell.png"></div>
+    </div>
+
+    <main>
+        <section class="user-profile-section">
+            <!-- 프로필 이미지 -->
+            <img src="https://via.placeholder.com/150" alt="Profile Image" id="profile-image-preview" class="user-profile-image">
+            <!-- 프로필 이미지 입력 파일 숨김 -->
+            <input type="file" id="profile-image-input" name="profileImage" style="display:none;">
+            <form id="userForm" method="post" enctype="multipart/form-data">
+                <div class="user-form-group">
+                    <label for="nickname">닉네임</label>
+                    <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요">
+                    <span id="nickname-error" class="password-error"></span>
+                </div>
+                <div class="user-form-group">
+                    <label for="username">아이디</label>
+                    <input type="text" id="username" name="username" value="example@example.com" disabled>
+                </div>
+                <div class="user-form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요">
+                    <span id="current-password-error" class="password-error"></span>
+                </div>
+                <div class="user-form-group">
+                    <label for="new-password">새 비밀번호</label>
+                    <input type="password" id="new-password" name="newPassword" placeholder="새 비밀번호를 입력하세요">
+                    <span id="password-strength" class="password-strength"></span>
+                </div>
+                <button type="submit" class="user-btn">수정하기</button>
+            </form>
+            <a href="#" class="user-btn btn-danger" id="withdraw-link">회원 탈퇴</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="bottom-nav">
+            <a th:href="@{/home}"><img src="/images/Home.png"></a>
+            <a th:href="@{/food}"><img src="/images/carrot.png"></a>
+            <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
+            <a th:href="@{/events}"><img src="/images/calendar.png"></a>
+            <a th:href="@{/my}"><img src="/images/Profile.png"></a>
+        </div>
+    </footer>
+</div>
+
+<div id="withdrawModal" class="user-modal">
+    <div class="user-modal-content">
+        <p>정말 탈퇴하시겠습니까?</p>
+        <div class="modal-btn-container">
+            <button class="modal-btn" id="confirmWithdraw">확인</button>
+            <button class="modal-btn" id="cancelWithdraw">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const userForm = document.getElementById('userForm');
+    const withdrawLink = document.getElementById('withdraw-link');
+    const withdrawModal = document.getElementById('withdrawModal');
+    const confirmWithdrawBtn = document.getElementById('confirmWithdraw');
+    const cancelWithdrawBtn = document.getElementById('cancelWithdraw');
+    const profileImagePreview = document.getElementById('profile-image-preview');
+    const profileImageInput = document.getElementById('profile-image-input');
+    const currentPasswordInput = document.getElementById('password');
+    const newPasswordInput = document.getElementById('new-password');
+    const currentPasswordError = document.getElementById('current-password-error');
+    const passwordStrengthIndicator = document.getElementById('password-strength');
+    const nicknameInput = document.getElementById('nickname');
+    const nicknameError = document.getElementById('nickname-error');
+
+    // 프로필 이미지를 클릭하면 파일 입력 창을 엽니다.
+    profileImagePreview.addEventListener('click', () => {
+        profileImageInput.click();
+    });
+
+    // 파일 입력이 변경되면 미리보기 이미지를 업데이트합니다.
+    profileImageInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                profileImagePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    newPasswordInput.addEventListener('input', () => {
+        const password = newPasswordInput.value;
+        const strength = checkPasswordStrength(password);
+        passwordStrengthIndicator.textContent = `비밀번호 강도: ${strength.message}`;
+        passwordStrengthIndicator.style.color = strength.color;
+    });
+
+    currentPasswordInput.addEventListener('input', async () => {
+        const currentPassword = currentPasswordInput.value;
+        const currentPasswordValid = await validateCurrentPassword(currentPassword);
+
+        if (!currentPasswordValid) {
+            currentPasswordError.textContent = '현재 비밀번호가 맞지 않습니다.';
+        } else {
+            currentPasswordError.textContent = '';
+        }
+    });
+
+    userForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(userForm);
+
+        const response = await fetch('/profile/update', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            alert('수정이 완료되었습니다.');
+            window.location.href = 'my5.html';
+        } else {
+            alert('수정에 실패했습니다.');
+        }
+    });
+
+    nicknameInput.addEventListener('input', () => {
+        const nickname = nicknameInput.value;
+        checkNicknameAvailability(nickname);
+    });
+
+    withdrawLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        withdrawModal.style.display = 'block';
+    });
+
+    cancelWithdrawBtn.addEventListener('click', () => {
+        withdrawModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === withdrawModal) {
+            withdrawModal.style.display = 'none';
+        }
+    });
+
+    confirmWithdrawBtn.addEventListener('click', () => {
+        alert('회원 탈퇴가 완료되었습니다.');
+        withdrawModal.style.display = 'none';
+    });
+
+    function checkPasswordStrength(password) {
+        let strength = { message: '약함', color: 'red' };
+        if (password.length > 8 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+            strength.message = '강함';
+            strength.color = 'green';
+        } else if (password.length > 6) {
+            strength.message = '보통';
+            strength.color = 'orange';
+        }
+        return strength;
+    }
+
+    async function validateCurrentPassword(password) {
+        try {
+            const response = await fetch('/profile/check-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ password: password })
+            });
+
+            const data = await response.json();
+            return data.valid;
+        } catch (error) {
+            console.error('Error validating current password:', error);
+            currentPasswordError.textContent = '비밀번호 확인 중 오류가 발생했습니다.';
+            return false;
+        }
+    }
+
+    async function checkNicknameAvailability(nickname) {
+        if (nickname.length < 2) {
+            nicknameError.textContent = '닉네임은 최소 2자 이상이어야 합니다.';
+            return;
+        }
+
+        try {
+            const response = await fetch('/profile/check-nickname', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nickname: nickname })
+            });
+
+            const data = await response.json();
+            if (!data.available) {
+                nicknameError.textContent = '이미 사용 중인 닉네임입니다.';
+            } else {
+                nicknameError.textContent = '';
+            }
+        } catch (error) {
+            console.error('Error checking nickname availability:', error);
+            nicknameError.textContent = '닉네임 확인 중 오류가 발생했습니다.';
+        }
+    }
+</script>
+</body>
+
+</html>

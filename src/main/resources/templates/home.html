@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gulbi house</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+
+        .note {
+            margin: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            position: relative;
+            background-color: #fff;
+            /* border: 1px solid #ccc; */
+        }
+
+        .note h3 {
+            margin-top: 0;
+            padding: 5px 10px;
+            background-color: #f2f2f2;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .note ul {
+            list-style-type: none;
+            padding: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .note li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            border-top: 1px dashed #ccc;
+            /* 연한 실선 경계선 추가 */
+
+        }
+
+        .note li:first-child {
+            border-top: none;
+            /* 첫 번째 항목의 상단 실선 제거 */
+        }
+
+        .memo {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .memo .toggle-memo {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 20px;
+            cursor: pointer;
+            padding-right: 15px;
+        }
+
+        .memo-content {
+            min-height: 100px;
+            /* 최소 높이를 설정; 필요에 따라 조절 */
+            overflow: visible;
+            /* 내용이 넘칠 때 박스가 확장되도록 */
+            padding: 10px;
+            text-align: left;
+        }
+
+        .memo-content p::before {
+            content: "● ";
+            color: black;
+            font-size: 10px;
+        }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f2f2f2;
+            padding: 10px 0;
+
+        }
+
+        .memo h3 {
+            margin-top: 0;
+            padding: 5px 10px;
+            /* background-color: #f2f2f2; */
+            border-radius: 4px 4px 0 0;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .bottom-nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="top-nav">
+        <div class="logo">gulbi house</div>
+        <div class="notification"><img src="images/Bell.png"></div>
+    </div>
+
+    <div class="search-bar">
+        <span class="search-icon"><img src="/images/search.png"></span>
+        <input type="text" placeholder="Search">
+    </div>
+
+    <div class="note" style="background-color: #f2f2f2;">
+        <h3>임박재료</h3>
+        <ul>
+            <li><input type="checkbox" checked> Checked</li>
+            <li><input type="checkbox" checked> Checked</li>
+            <li><input type="checkbox" checked> Checked</li>
+
+        </ul>
+    </div>
+
+    <div class="note" style="background-color: #f2f2f2;">
+        <h3>장바구니</h3>
+        <ul>
+            <li><input type="checkbox" checked> Checked</li>
+            <li><input type="checkbox" checked> Checked</li>
+        </ul>
+    </div>
+
+    <div class="memo">
+        <h3>메모장 <span class="toggle-memo"><img src="/img/bb.png"></span></h3>
+        <div class="memo-content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec tellus vitae justo elementum
+                malesuada. Mauris pulvinar nunc vel risus blandit, eget tempor magna viverra. Praesent laoreet velit
+                nec
+                nulla finibus, vel semper neque ultrices. Sed at quam id nulla ullamcorper tincidunt. Integer in
+                erat
+                vitae dui eleifend tincidunt. Donec eget tellus vitae purus convallis convallis.</p>
+        </div>
+        <div class="memo-content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec tellus vitae justo elementum
+                malesuada. Mauris pulvinar nunc vel risus blandit, eget tempor magna viverra.</p>
+        </div>
+        <div class="memo-content">
+            <p>ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec tellus vitae justo elementum
+                malesuada. Mauris pulvinar nunc vel risus blandit, eget tempor magna viverra.</p>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="/home3.html"><img src="/images/Home.png"></a>
+        <a href="/food.html"><img src="/images/carrot.png"></a>
+        <a href="/fridge.html"><img src="/images/Fridge.png"></a>
+        <a href="/calendar5.html"><img src="/images/calendar.png"></a>
+        <a href="/my2.html"><img src="/images/Profile.png"></a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.toggle-memo').click(function () {
+            $(this).closest('.memo').find('.memo-content').toggle();
+        });
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>회원가입</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .header-container {
+            display: flex;
+            position: relative;
+            align-items: center;
+        }
+
+        .title-center {
+            margin: 10%;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .back-link {
+            position: absolute;
+            /* 절대 위치 지정 */
+            left: 30px;
+            /* 왼쪽 여백 설정 */
+            top: 50%;
+            /* 상단 여백 설정 */
+            transform: translateY(-50%);
+            /* 수직 가운데 정렬 */
+            font-size: 24px;
+
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin: auto;
+            margin-top: 90px;
+
+        }
+
+        .input-row {
+            width: 310px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .input-field {
+            display: flex;
+            /* Flex 컨테이너 */
+            width: 108%;
+            /* 부모 요소(.input-row)의 너비를 따름 */
+        }
+
+        .input-field input {
+            flex-grow: 1;
+            margin-right: 10px;
+            /* 입력 필드와 버튼 사이의 간격 추가 */
+        }
+
+        label {
+            margin-left: 11px;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        .input-field button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+        }
+
+        input[type="email"],
+        input[type="verification-code"] {
+            width: 319%;
+            /* 버튼 너비와 여백을 고려해 조정 */
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+        }
+
+        .auth-request,
+        .confirm {
+            width: 150px;
+            /* 수정된 너비 */
+            margin: 0;
+            /* 추가됨: 여백을 제거하여 input 필드와 맞춤 */
+        }
+
+        button {
+            background-color: #153F76;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 335px;
+            margin: 50px auto;
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="container">
+    <div class="header-container">
+        <a href="log.html" class="back-link"><img th:src="@{/images/back2.png}" alt="뒤로가기"></a>
+        <h2 class="title-center">회원가입</h2>
+    </div>
+    <div class="input-container">
+        <form th:action="@{/user}" method="POST">
+            <div class="input-row">
+                <label for="username">닉네임</label>
+                <input id="username" type="text" placeholder="닉네임 입력 (최대 7자)" name="nickname">
+            </div>
+            <div class="input-row">
+                <label for="email">아이디 (이메일)</label>
+                <div class="input-field">
+                    <input id="email" type="email" placeholder="이메일 주소 입력" name="email">
+                    <button class="auth-request">인증 요청</button>
+                </div>
+            </div>
+            <div class="input-row">
+                <label for="verification-code">인증번호</label>
+                <div class="input-field">
+                    <input id="verification-code" type="verification-code" placeholder="인증번호 4자리 입력">
+                    <button class="confirm">확인</button>
+                </div>
+            </div>
+            <div class="input-row">
+                <label for="new-password">비밀번호</label>
+                <input id="new-password" type="password" placeholder="새로운 비밀번호 입력" name="password">
+            </div>
+            <div class="input-row">
+                <label for="confirm-password">비밀번호 확인</label>
+                <input id="confirm-password" type="password" placeholder="비밀번호 재입력">
+            </div>
+            <button>가입하기</button>
+        </form>
+    </div>
+    <p></p>
+</div>
+</body>
+
+</html>

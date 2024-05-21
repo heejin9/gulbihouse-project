@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Calendar</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar/main.min.css">
+    <style>
+        .form-control {
+            border-radius: 50px;
+        }
+
+        .btn-primary-custom {
+            background-color: #153F76;
+            border-color: #153F76;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .event-list {
+            margin-top: 20px;
+        }
+
+        .card {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .btn-delete {
+            background-color: #153F76;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-right: 25px;
+        }
+
+        .card-content {
+            flex: 1;
+            text-align: left; /* 일정 글씨를 왼쪽 정렬 */
+            margin-left: 25px;
+        }
+
+        .card-actions {
+            flex: 0 0 auto;
+            padding-left: 10px;
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .card-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-right {
+            flex: 0 0 auto;
+            padding-left: 10px; /* 삭제 버튼을 왼쪽으로 이동 */
+        }
+
+        .event-icon {
+            width: 10px;
+            height: 10px;
+            background-color: #153F76;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 상단 Navigation 바 -->
+        <div class="top-nav">
+            <div class="logo">gulbi house</div>
+            <div class="notification">&#9993;</div>
+        </div>
+
+        <!-- 검색바 -->
+        <div class="search-bar">
+            <span class="search-icon"><img src="/img/search.png"></span>
+            <input type="text" placeholder="검색">
+        </div>
+        <form>
+            <!-- 달력 -->
+            <div class="row justify-content-center my-4">
+                <div class="col-md-8">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+
+            <!-- 전체 일정 목록 -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-8">
+                    <!-- <h5>전체 일정</h5> -->
+                    <div id="eventList" class="event-list"></div>
+                </div>
+            </div>
+
+            <!-- 메모 목록 -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-8">
+                    <ul class="list-group" id="notesList"></ul>
+                </div>
+            </div>
+        </form>
+
+        <!-- 하단 Navigation 바 -->
+        <div class="bottom-nav">
+            <a href="/home3.html"><img src="/img/Home.png"></a>
+            <a href="/food.html"><img src="/img/carrot.png"></a>
+            <a href="/fridge.html"><img src="/img/Fridge.png"></a>
+            <a href="/calendar5.html"><img src="/img/calendar.png"></a>
+            <a href="/my2.html"><img src="/img/Profile.png"></a>
+        </div>
+
+        <!-- Modal for adding/editing events -->
+        <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eventModalLabel">일정 추가</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group text-left">
+                                <label for="eventTitle">제목</label>
+                                <input type="text" class="form-control" id="eventTitle" placeholder="제목">
+                            </div>
+                            <div class="form-group text-left">
+                                <label for="eventStart">시작 날짜</label>
+                                <input type="date" class="form-control" id="eventStart" placeholder="시작 날짜">
+                            </div>
+                            <div class="form-group text-left">
+                                <label for="eventEnd">종료 날짜</label>
+                                <input type="date" class="form-control" id="eventEnd" placeholder="종료 날짜">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary btn-primary-custom" id="saveEvent">저장</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar/main.min.js"></script>
+        <script src="script.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const calendarEl = document.getElementById('calendar');
+                const eventListEl = document.getElementById('eventList');
+                const calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    editable: true,
+                    selectable: true,
+                    selectMirror: true,
+                    dayMaxEvents: true,
+                    events: fetchEvents(),
+                    eventColor: '#153F76',
+                    select: function (info) {
+                        const formattedDate = info.startStr;
+                        showEventModal(formattedDate, null);
+                    },
+                    eventClick: function (info) {
+                        const event = info.event;
+                        showEventModal(event.startStr, event.endStr, event.title, event.id);
+                    }
+                });
+
+                calendar.render();
+
+                const eventModal = new bootstrap.Modal(document.getElementById('eventModal'), {});
+
+                function showEventModal(startDate, endDate = null, title = '', id = null) {
+                    $('#eventTitle').val(title);
+                    $('#eventStart').val(startDate);
+                    $('#eventEnd').val(endDate || '');
+                    $('#eventId').val(id);
+                    eventModal.show();
+                }
+
+                $('#saveEvent').click(function () {
+                    const title = $('#eventTitle').val().trim();
+                    const startDate = $('#eventStart').val();
+                    const endDate = $('#eventEnd').val();
+                    const id = $('#eventId').val();
+
+                    if (title === '') {
+                        alert('제목을 입력해주세요.');
+                        return;
+                    }
+
+                    const event = {
+                        title: title,
+                        start: startDate,
+                        end: endDate || null
+                    };
+
+                    if (id) {
+                        event.id = id;
+                        updateEvent(event);
+                    } else {
+                        createEvent(event);
+                    }
+
+                    eventModal.hide();
+                });
+
+                function fetchEvents() {
+                    return fetch('/api/events')
+                        .then(response => response.json())
+                        .then(events => {
+                            renderEventList(events);
+                            return events;
+                        });
+                }
+
+                function createEvent(event) {
+                    fetch('/api/events', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(event),
+                    })
+                    .then(response => response.json())
+                    .then(newEvent => {
+                        calendar.addEvent(newEvent);
+                        renderEventList([...calendar.getEvents(), newEvent]);
+                    });
+                }
+
+                function updateEvent(event) {
+                    fetch(`/api/events/${event.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(event),
+                    })
+                    .then(response => response.json())
+                    .then(updatedEvent => {
+                        const calendarEvent = calendar.getEventById(updatedEvent.id);
+                        calendarEvent.setProp('title', updatedEvent.title);
+                        calendarEvent.setStart(updatedEvent.start);
+                        calendarEvent.setEnd(updatedEvent.end);
+                        renderEventList(calendar.getEvents());
+                    });
+                }
+
+                function deleteEvent(id) {
+                    fetch(`/api/events/${id}`, {
+                        method: 'DELETE',
+                    })
+                    .then(() => {
+                        const calendarEvent = calendar.getEventById(id);
+                        calendarEvent.remove();
+                        renderEventList(calendar.getEvents());
+                    });
+                }
+
+                function renderEventList(events) {
+                    eventListEl.innerHTML = '';
+                    if (events.length === 0) {
+                        eventListEl.innerHTML = '<p>일정이 없습니다.</p>';
+                    } else {
+                        events.forEach(event => {
+                            const card = document.createElement('div');
+                            card.className = 'card';
+
+                            const cardRow = document.createElement('div');
+                            cardRow.className = 'card-row';
+
+                            const cardLeft = document.createElement('div');
+                            cardLeft.className = 'card-left';
+
+                            const eventIcon = document.createElement('div');
+                            eventIcon.className = 'event-icon';
+
+                            const cardContent = document.createElement('div');
+                            cardContent.className = 'card-content';
+
+                            const cardTitle = document.createElement('h5');
+                            cardTitle.className = 'card-title';
+                            cardTitle.style.display = 'flex';
+                            cardTitle.style.alignItems = 'center';
+                            cardTitle.appendChild(eventIcon);
+                            cardTitle.appendChild(document.createTextNode(event.title));
+
+                            const cardText = document.createElement('p');
+                            cardText.className = 'card-text';
+                            cardText.innerHTML = `<strong>시작:</strong> ${event.start}<br><strong>종료:</strong> ${event.end || '종료 날짜 없음'}`;
+
+                            const cardRight = document.createElement('div');
+                            cardRight.className = 'card-right';
+
+                            const deleteButton = document.createElement('button');
+                            deleteButton.className = 'btn-delete';
+                            deleteButton.textContent = '삭제';
+                            deleteButton.onclick = function () {
+                                deleteEvent(event.id);
+                            };
+
+                            cardContent.appendChild(cardTitle);
+                            cardContent.appendChild(cardText);
+                            cardLeft.appendChild(cardContent);
+                            cardRight.appendChild(deleteButton);
+
+                            cardRow.appendChild(cardLeft);
+                            cardRow.appendChild(cardRight);
+
+                            card.appendChild(cardRow);
+
+                            eventListEl.appendChild(card);
+                        });
+                    }
+                }
+            });
+
+        </script>
+</body>
+
+</html>
