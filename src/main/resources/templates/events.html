@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar</title>
+    <!-- Custom CSS 및 외부 CSS 라이브러리 로드 -->
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar/main.min.css">
     <style>
+        /* 추가 스타일 정의 */
         .form-control {
             border-radius: 50px;
         }
@@ -86,6 +88,7 @@
         <span class="search-icon"><img src="/images/search.png"></span>
         <input type="text" placeholder="검색">
     </div>
+    <!-- 캘린더와 이벤트 목록을 보여주는 폼 -->
     <form>
         <div class="row justify-content-center my-4">
             <div class="col-md-8">
@@ -103,15 +106,16 @@
             </div>
         </div>
     </form>
+    <!-- 하단 내비게이션 -->
     <div class="bottom-nav">
         <a th:href="@{/home}"><img src="/images/Home.png"></a>
-        <a th:href="@{/food}"><img src="/images/carrot.png"></a>
+        <a th:href="@{/foods}"><img src="/images/carrot.png"></a>
         <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
         <a th:href="@{/events}"><img src="/images/calendar.png"></a>
         <a th:href="@{/my}"><img src="/images/Profile.png"></a>
     </div>
-    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel"
-         aria-hidden="true">
+    <!-- 이벤트 추가 모달 -->
+    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -145,6 +149,7 @@
         </div>
     </div>
 </div>
+<!-- 필수 자바스크립트 라이브러리 로드 -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -154,25 +159,25 @@
         const calendarEl = document.getElementById('calendar');
         const eventListEl = document.getElementById('eventList');
         const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
+            initialView: 'dayGridMonth', // 초기 뷰를 월별 달력으로 설정
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            editable: true,
-            selectable: true,
+            editable: true, // 이벤트 수정 가능
+            selectable: true, // 날짜 선택 가능
             selectMirror: true,
             dayMaxEvents: true,
-            events: fetchEvents,
-            eventColor: '#153F76',
+            events: fetchEvents, // 이벤트를 가져오는 함수 설정
+            eventColor: '#153F76', // 이벤트 색상 설정
             select: function (info) {
                 const formattedDate = info.startStr;
-                showEventModal(formattedDate, null);
+                showEventModal(formattedDate, null); // 이벤트 추가 모달 표시
             },
             eventClick: function (info) {
                 const event = info.event;
-                showEventModal(event.startStr, event.endStr, event.title, event.id);
+                showEventModal(event.startStr, event.endStr, event.title, event.id); // 이벤트 수정 모달 표시
             },
             eventChange: function (info) {
                 const event = info.event;
@@ -180,14 +185,15 @@
                     title: event.title,
                     start: event.start,
                     end: event.end
-                });
+                }); // 이벤트 수정 시 업데이트
             }
         });
 
-        calendar.render();
+        calendar.render(); // 캘린더를 화면에 렌더링
 
         const eventModal = new bootstrap.Modal(document.getElementById('eventModal'), {});
 
+        // 이벤트 추가/수정 모달을 표시하는 함수
         function showEventModal(startDate, endDate = null, title = '', id = '') {
             $('#eventTitle').val(title);
             $('#eventStart').val(startDate);
@@ -196,6 +202,7 @@
             eventModal.show();
         }
 
+        // 저장 버튼 클릭 시 이벤트를 저장 또는 업데이트하는 함수
         $('#saveEvent').click(function () {
             const title = $('#eventTitle').val().trim();
             const startDate = $('#eventStart').val();
@@ -214,18 +221,19 @@
             };
 
             if (id) {
-                updateEvent(id, eventData);
+                updateEvent(id, eventData); // 기존 이벤트 업데이트
             } else {
-                createEvent(eventData);
+                createEvent(eventData); // 새로운 이벤트 생성
             }
         });
 
+        // 서버에서 이벤트 목록을 가져와 캘린더에 추가하는 함수
         function fetchEvents(fetchInfo, successCallback, failureCallback) {
             fetch('/events/api')
                 .then(response => response.json())
                 .then(events => {
-                    renderEventList(events);
-                    successCallback(events);
+                    renderEventList(events); // 이벤트 목록을 화면에 렌더링
+                    successCallback(events); // FullCalendar에 이벤트 전달
                 })
                 .catch(error => {
                     console.error('Error fetching events:', error);
@@ -233,6 +241,7 @@
                 });
         }
 
+        // 새로운 이벤트를 서버에 저장하고 캘린더에 추가하는 함수
         function createEvent(event) {
             fetch('/events/api', {
                 method: 'POST',
@@ -243,12 +252,13 @@
             })
             .then(response => response.json())
             .then(newEvent => {
-                calendar.addEvent(newEvent);
-                eventModal.hide();
-                refetchEvents();
+                calendar.addEvent(newEvent); // 새로운 이벤트를 캘린더에 추가
+                eventModal.hide(); // 모달 숨기기
+                refetchEvents(); // 이벤트 목록 다시 가져오기
             });
         }
 
+        // 기존 이벤트를 서버에 업데이트하고 캘린더를 갱신하는 함수
         function updateEvent(id, event) {
             fetch(`/events/api/${id}`, {
                 method: 'PUT',
@@ -260,37 +270,40 @@
             .then(response => response.json())
             .then(updatedEvent => {
                 const eventObj = calendar.getEventById(id);
-                eventObj.setProp('title', updatedEvent.title);
-                eventObj.setDates(updatedEvent.start, updatedEvent.end);
-                eventModal.hide();
-                refetchEvents();
+                eventObj.setProp('title', updatedEvent.title); // 이벤트 제목 업데이트
+                eventObj.setDates(updatedEvent.start, updatedEvent.end); // 이벤트 날짜 업데이트
+                eventModal.hide(); // 모달 숨기기
+                refetchEvents(); // 이벤트 목록 다시 가져오기
             });
         }
 
+        // 이벤트를 서버에서 삭제하고 캘린더에서 제거하는 함수
         function deleteEvent(id) {
             fetch(`/events/api/${id}`, {
                 method: 'DELETE',
             })
             .then(() => {
                 const eventObj = calendar.getEventById(id);
-                eventObj.remove();
-                refetchEvents();
+                eventObj.remove(); // 캘린더에서 이벤트 제거
+                refetchEvents(); // 이벤트 목록 다시 가져오기
             });
         }
 
+        // 서버에서 최신 이벤트 목록을 다시 가져와 캘린더와 이벤트 목록을 갱신하는 함수
         function refetchEvents() {
             fetch('/events/api')
                 .then(response => response.json())
                 .then(events => {
-                    calendar.removeAllEvents();
-                    calendar.addEventSource(events);
-                    renderEventList(events);
+                    calendar.removeAllEvents(); // 모든 이벤트 제거
+                    calendar.addEventSource(events); // 새로운 이벤트 목록 추가
+                    renderEventList(events); // 이벤트 목록을 화면에 렌더링
                 })
                 .catch(error => {
                     console.error('Error refetching events:', error);
                 });
         }
 
+        // 서버에서 가져온 이벤트 목록을 카드 형식으로 렌더링하는 함수
         function renderEventList(events) {
             eventListEl.innerHTML = '';
             if (events.length === 0) {
@@ -330,7 +343,7 @@
                     deleteButton.className = 'btn-delete';
                     deleteButton.textContent = '삭제';
                     deleteButton.onclick = function () {
-                        deleteEvent(event.id);
+                        deleteEvent(event.id); // 삭제 버튼 클릭 시 이벤트 삭제
                     };
 
                     cardContent.appendChild(cardTitle);
@@ -343,12 +356,12 @@
 
                     card.appendChild(cardRow);
 
-                    eventListEl.appendChild(card);
+                    eventListEl.appendChild(card); // 이벤트 목록에 카드 추가
                 });
             }
         }
 
-        refetchEvents();
+        refetchEvents(); // 초기 이벤트 목록 가져오기
     });
 </script>
 </body>

@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor // 생성자 주입을 자동으로 생성해주는 롬복 어노테이션
 @Service
 public class IngredientService {
-    private final IngredientRepository ingredientRepository;
-    private final UserRepository userRepository;
+    private final IngredientRepository ingredientRepository; // 식재료 리포지토리
+    private final UserRepository userRepository; // 사용자 리포지토리
 
     // 새로운 식재료를 저장하는 메서드
     public Long save(AddIngredientRequest dto, Long userId) {

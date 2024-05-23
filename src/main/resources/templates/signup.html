@@ -19,15 +19,10 @@
 
         .back-link {
             position: absolute;
-            /* 절대 위치 지정 */
             left: 30px;
-            /* 왼쪽 여백 설정 */
             top: 50%;
-            /* 상단 여백 설정 */
             transform: translateY(-50%);
-            /* 수직 가운데 정렬 */
             font-size: 24px;
-
         }
 
         .input-container {
@@ -37,7 +32,6 @@
             width: 100%;
             margin: auto;
             margin-top: 90px;
-
         }
 
         .input-row {
@@ -50,15 +44,12 @@
 
         .input-field {
             display: flex;
-            /* Flex 컨테이너 */
             width: 108%;
-            /* 부모 요소(.input-row)의 너비를 따름 */
         }
 
         .input-field input {
             flex-grow: 1;
             margin-right: 10px;
-            /* 입력 필드와 버튼 사이의 간격 추가 */
         }
 
         label {
@@ -81,7 +72,6 @@
         input[type="email"],
         input[type="verification-code"] {
             width: 319%;
-            /* 버튼 너비와 여백을 고려해 조정 */
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
@@ -91,9 +81,7 @@
         .auth-request,
         .confirm {
             width: 150px;
-            /* 수정된 너비 */
             margin: 0;
-            /* 추가됨: 여백을 제거하여 input 필드와 맞춤 */
         }
 
         button {

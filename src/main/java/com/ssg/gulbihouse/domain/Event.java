@@ -12,15 +12,15 @@ import java.time.LocalDate;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // 이벤트 ID
 
-    private String title;
+    private String title; // 이벤트 제목
 
-    private LocalDate start;
+    private LocalDate start; // 시작 날짜
 
-    private LocalDate end;
+    private LocalDate end; // 종료 날짜
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user; // 이벤트를 소유한 사용자
 }

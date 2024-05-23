@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+// 사용자 정보를 저장하는 엔티티 클래스
 @Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -19,25 +20,25 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
-    private Long id;
+    private Long id; // 사용자 ID
 
     @Column(name = "nickname", nullable = false, unique = true)
-    private String nickname;
+    private String nickname; // 사용자 닉네임
 
     @Column(name = "email", nullable = false, unique = true)
-    private String email;
+    private String email; // 사용자 이메일
 
     @Column(name = "password", nullable = false)
-    private String password;
+    private String password; // 사용자 비밀번호
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = true)
-    private Role role;
+    private Role role; // 사용자 역할
 
     @Lob
-    private byte[] profileImage;
+    private byte[] profileImage; // 프로필 이미지
 
-
+    // 사용자 생성자
     @Builder
     public User(Long id, String nickname, String email, String password, Role role) {
         this.id = id;
@@ -47,36 +48,43 @@ public class User implements UserDetails {
         this.role = role;
     }
 
+    // 권한을 반환하는 메서드
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
+    // 사용자 이름을 반환하는 메서드 (이메일을 사용자 이름으로 사용)
     @Override
     public String getUsername() {
         return email;
     }
 
+    // 비밀번호를 반환하는 메서드
     @Override
     public String getPassword() {
         return password;
     }
 
+    // 계정이 만료되지 않았는지 확인하는 메서드
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    // 계정이 잠기지 않았는지 확인하는 메서드
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    // 자격 증명이 만료되지 않았는지 확인하는 메서드
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    // 계정이 활성화되었는지 확인하는 메서드
     @Override
     public boolean isEnabled() {
         return true;

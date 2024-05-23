@@ -149,12 +149,12 @@
             <form id="userForm" method="post" enctype="multipart/form-data">
                 <div class="user-form-group">
                     <label for="nickname">닉네임</label>
-                    <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요">
+                    <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요" th:value="${user.nickname}">
                     <span id="nickname-error" class="password-error"></span>
                 </div>
                 <div class="user-form-group">
                     <label for="username">아이디</label>
-                    <input type="text" id="username" name="username" value="example@example.com" disabled>
+                    <input type="text" id="username" name="username" th:value="${user.email}" disabled>
                 </div>
                 <div class="user-form-group">
                     <label for="password">비밀번호</label>
@@ -175,7 +175,7 @@
     <footer>
         <div class="bottom-nav">
             <a th:href="@{/home}"><img src="/images/Home.png"></a>
-            <a th:href="@{/food}"><img src="/images/carrot.png"></a>
+            <a th:href="@{/foods}"><img src="/images/carrot.png"></a>
             <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
             <a th:href="@{/events}"><img src="/images/calendar.png"></a>
             <a th:href="@{/my}"><img src="/images/Profile.png"></a>
@@ -194,6 +194,7 @@
 </div>
 
 <script>
+    // 요소 가져오기
     const userForm = document.getElementById('userForm');
     const withdrawLink = document.getElementById('withdraw-link');
     const withdrawModal = document.getElementById('withdrawModal');
@@ -208,12 +209,12 @@
     const nicknameInput = document.getElementById('nickname');
     const nicknameError = document.getElementById('nickname-error');
 
-    // 프로필 이미지를 클릭하면 파일 입력 창을 엽니다.
+    // 프로필 이미지 클릭 시 파일 선택 창 열기
     profileImagePreview.addEventListener('click', () => {
         profileImageInput.click();
     });
 
-    // 파일 입력이 변경되면 미리보기 이미지를 업데이트합니다.
+    // 파일 선택 시 이미지 미리보기
     profileImageInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -225,6 +226,7 @@
         }
     });
 
+    // 새 비밀번호 입력 시 강도 체크
     newPasswordInput.addEventListener('input', () => {
         const password = newPasswordInput.value;
         const strength = checkPasswordStrength(password);
@@ -232,6 +234,7 @@
         passwordStrengthIndicator.style.color = strength.color;
     });
 
+    // 현재 비밀번호 유효성 체크
     currentPasswordInput.addEventListener('input', async () => {
         const currentPassword = currentPasswordInput.value;
         const currentPasswordValid = await validateCurrentPassword(currentPassword);
@@ -243,6 +246,7 @@
         }
     });
 
+    // 폼 제출 시
     userForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -255,37 +259,58 @@
 
         if (response.ok) {
             alert('수정이 완료되었습니다.');
-            window.location.href = 'my5.html';
+            window.location.href = '/my';
         } else {
             alert('수정에 실패했습니다.');
         }
     });
 
+    // 닉네임 유효성 체크
     nicknameInput.addEventListener('input', () => {
         const nickname = nicknameInput.value;
         checkNicknameAvailability(nickname);
     });
 
+    // 회원 탈퇴 버튼 클릭 시 모달 열기
     withdrawLink.addEventListener('click', (e) => {
         e.preventDefault();
         withdrawModal.style.display = 'block';
     });
 
+    // 모달 닫기 버튼 클릭 시 모달 닫기
     cancelWithdrawBtn.addEventListener('click', () => {
         withdrawModal.style.display = 'none';
     });
 
+    // 모달 외부 클릭 시 모달 닫기
     window.addEventListener('click', (event) => {
         if (event.target === withdrawModal) {
             withdrawModal.style.display = 'none';
         }
     });
 
+    // 회원 탈퇴 확인 버튼 클릭 시
     confirmWithdrawBtn.addEventListener('click', () => {
-        alert('회원 탈퇴가 완료되었습니다.');
-        withdrawModal.style.display = 'none';
+        fetch('/profile/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                alert('회원 탈퇴에 실패했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('회원 탈퇴 중 오류가 발생했습니다.');
+        });
     });
 
+    // 비밀번호 강도 체크 함수
     function checkPasswordStrength(password) {
         let strength = { message: '약함', color: 'red' };
         if (password.length > 8 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
@@ -298,6 +323,7 @@
         return strength;
     }
 
+    // 현재 비밀번호 유효성 체크 함수
     async function validateCurrentPassword(password) {
         try {
             const response = await fetch('/profile/check-password', {
@@ -317,6 +343,7 @@
         }
     }
 
+    // 닉네임 유효성 체크 함수
     async function checkNicknameAvailability(nickname) {
         if (nickname.length < 2) {
             nicknameError.textContent = '닉네임은 최소 2자 이상이어야 합니다.';

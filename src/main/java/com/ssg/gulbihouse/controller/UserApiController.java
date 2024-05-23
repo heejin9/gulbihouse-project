@@ -11,23 +11,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-//회원가입 요청을 받으면 서비스 메서드를 사용해 사용자를 저장한 뒤, 로그인 페이지로 이동
 @RequiredArgsConstructor
 @Controller
 public class UserApiController {
 
-    private final UserService userService;
+    private final UserService userService; // 사용자 서비스 빈을 주입받음
 
     @PostMapping("/user")
     public String signup(AddUserRequest request) {
-        // 회원 가입 메서드 호출
+        // 회원 가입 메서드 호출 후 로그인 페이지로 리다이렉트
         userService.save(request);
-        // 회워 가입이 완료된 이후에 로그인 페이지로 이동
         return "redirect:/login";
     }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // 로그아웃 처리 후 로그인 페이지로 리다이렉트
         new SecurityContextLogoutHandler().logout(request, response,
                 SecurityContextHolder.getContext().getAuthentication());
         return "redirect:/login";

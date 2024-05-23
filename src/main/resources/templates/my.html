@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>내 정보</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <style>
         .profile-image {
             width: 100px;
@@ -110,15 +110,15 @@
             transition: .4s;
         }
 
-        input:checked+.slider {
+        input:checked + .slider {
             background-color: #153F76;
         }
 
-        input:focus+.slider {
+        input:focus + .slider {
             box-shadow: 0 0 1px #2196F3;
         }
 
-        input:checked+.slider:before {
+        input:checked + .slider:before {
             transform: translateX(26px);
         }
 
@@ -293,10 +293,10 @@
 
     <div class="profile-section">
         <div class="profile-image">
-            <img src="https://via.placeholder.com/150" alt="Profile Image">
+            <img th:src="@{${user.profileImage}}" alt="Profile Image">
         </div>
-        <h4>My Nickname</h4>
-        <button class="btn btn-modi" onclick="window.location.href='modify.html'">내 정보 수정</button>
+        <h4 th:text="${user.nickname}">My Nickname</h4>
+        <button class="btn btn-modi" th:onclick="|window.location.href='@{/profile}'|">내 정보 수정</button>
     </div>
     <hr>
     <div class="friend-section">
@@ -343,7 +343,7 @@
 
     <div class="notification-section">
         <div class="notification-item">
-            <div class="emoji-area"><img src="/img/bell.png"></div>
+            <div class="emoji-area"><img src="/images/bell.png"></div>
             <div class="text-area">
                 <p style="font-weight: bold;">알림설정</p>
                 <p>Get important notifications...</p>
@@ -356,7 +356,7 @@
             </div>
         </div>
         <div class="notification-item">
-            <div class="emoji-area"><img src="/img/bell.png"></div>
+            <div class="emoji-area"><img src="/images/bell.png"></div>
             <div class="text-area">
                 <p style="font-weight: bold;">알림설정</p>
                 <p>Get important notifications...</p>
@@ -370,11 +370,11 @@
         </div>
     </div>
 
-    <button class="btn btn-danger">로그아웃</button>
+    <button class="btn btn-danger" id="logout-button">로그아웃</button>
 
     <div class="bottom-nav">
         <a th:href="@{/home}"><img src="/images/Home.png"></a>
-        <a th:href="@{/food}"><img src="/images/carrot.png"></a>
+        <a th:href="@{/foods}"><img src="/images/carrot.png"></a>
         <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
         <a th:href="@{/events}"><img src="/images/calendar.png"></a>
         <a th:href="@{/my}"><img src="/images/Profile.png"></a>
@@ -437,6 +437,28 @@
             friendNickname.value = '';
             modal.style.display = "none";
         }
+    });
+
+    // 로그아웃 기능
+    const logoutButton = document.getElementById('logout-button');
+    logoutButton.addEventListener('click', () => {
+        fetch('/logout', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                alert('로그아웃 실패');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('로그아웃 중 오류 발생');
+        });
     });
 </script>
 </body>

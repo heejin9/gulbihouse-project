@@ -4,223 +4,223 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>식재료 관리</title>
+    <!-- 외부 CSS 파일을 불러오기 위한 링크 -->
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <style>
+        /* 스타일 정의 */
         .filter-buttons-container {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin: 20px 10px;
-              position: relative;
-          }
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 10px;
+            position: relative;
+        }
 
-          .filter-buttons {
-              display: flex;
-              justify-content: space-around;
-              background-color: #E0E0E0;
-              border-radius: 20px;
-              padding: 5px;
-              flex-grow: 1;
-          }
+        .filter-buttons {
+            display: flex;
+            justify-content: space-around;
+            background-color: #E0E0E0;
+            border-radius: 20px;
+            padding: 5px;
+            flex-grow: 1;
+        }
 
-          .filter-buttons button {
-              flex-grow: 1;
-              padding: 10px 0;
-              border: none;
-              border-radius: 20px;
-              background-color: #E0E0E0;
-              color: #333;
-              font-size: 16px;
-              cursor: pointer;
-              margin: 0 5px;
-          }
+        .filter-buttons button {
+            flex-grow: 1;
+            padding: 10px 0;
+            border: none;
+            border-radius: 20px;
+            background-color: #E0E0E0;
+            color: #333;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
 
-          .filter-buttons .active {
-              background-color: #153F76;
-              color: white;
-          }
+        .filter-buttons .active {
+            background-color: #153F76;
+            color: white;
+        }
 
-          .sort-options {
-              position: absolute;
-              right: 0;
-              bottom: -30px;
-              background-color: transparent;
-          }
+        .sort-options {
+            position: absolute;
+            right: 0;
+            bottom: -30px;
+            background-color: transparent;
+        }
 
-          .sort-options select {
-              border: none;
-              background-color: transparent;
-              font-size: 16px;
-              color: #153F76;
-          }
+        .sort-options select {
+            border: none;
+            background-color: transparent;
+            font-size: 16px;
+            color: #153F76;
+        }
 
-          .ingredients-section {
-              flex-grow: 1;
-              padding: 20px;
-          }
+        .ingredients-section {
+            flex-grow: 1;
+            padding: 20px;
+        }
 
-          .ingredients-table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-top: 10px; /* 간격 조정 */
-          }
+        .ingredients-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
 
-          .ingredients-table th, .ingredients-table td {
-              border: 1px solid #ccc;
-              padding: 10px;
-              text-align: left;
-          }
+        .ingredients-table th, .ingredients-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
 
-          .ingredients-table th {
-              background-color: #f2f2f2;
-          }
+        .ingredients-table th {
+            background-color: #f2f2f2;
+        }
 
-          .add-btn-container {
-              display: flex;
-              justify-content: flex-end;
-              align-items: center;
-              margin-bottom: 20px;
-              /* position: fixed; */
-              bottom: 70px;
-              right: 20px;
-              z-index: 10;
-          }
+        .add-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 20px;
+            bottom: 70px;
+            right: 20px;
+            z-index: 10;
+        }
 
-          .add-btn, .delete-btn {
-              width: 40px;
-              height: 40px;
-              border-radius: 50%;
-              background-color: #153F76;
-              color: #fff;
-              justify-content: center;
-              align-items: center;
-              font-size: 24px;
-              display: flex;
-              cursor: pointer;
-              margin: 0 10px;
-          }
+        .add-btn, .delete-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #153F76;
+            color: #fff;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            display: flex;
+            cursor: pointer;
+            margin: 0 10px;
+        }
 
-          .delete-btn {
-              background-color: #E0E0E0;
-          }
+        .delete-btn {
+            background-color: #E0E0E0;
+        }
 
-          .modal {
-              display: none;
-              position: fixed;
-              z-index: 1;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: 100%;
-              overflow: auto;
-              background-color: rgba(0, 0, 0, 0.4);
-          }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-          .modal-content {
-              background-color: #fefefe;
-              margin: 15% auto;
-              padding: 20px;
-              border: 1px solid #888;
-              width: 80%;
-              max-width: 400px;
-              border-radius: 10px;
-              position: relative;
-          }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            position: relative;
+        }
 
-          .modal-form input[type="submit"] {
-              background-color: #153F76; /* 원하는 색상으로 변경 */
-              color: white; /* 텍스트 색상 */
+        .modal-form input[type="submit"] {
+            background-color: #153F76;
+            color: white;
+        }
 
-          }
+        .modal-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
 
-          .modal-header {
-              display: flex;
-              justify-content: flex-end;
-              margin-bottom: 10px;
-          }
+        .modal-close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-          .modal-close {
-              color: #aaa;
-              font-size: 28px;
-              font-weight: bold;
-              cursor: pointer;
-          }
+        .modal-close:hover, .modal-close:focus {
+            color: black;
+            text-decoration: none;
+        }
 
-          .modal-close:hover, .modal-close:focus {
-              color: black;
-              text-decoration: none;
-          }
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+        }
 
-          .modal-form {
-              display: flex;
-              flex-direction: column;
-          }
+        .modal-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
 
-          .modal-form label {
-              display: block;
-              margin-bottom: 5px;
-          }
+        .modal-form input, .modal-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            box-sizing: border-box;
+        }
 
-          .modal-form input, .modal-form select {
-              width: 100%;
-              padding: 10px;
-              margin-bottom: 10px;
-              border: 1px solid #ccc;
-              border-radius: 20px;
-              box-sizing: border-box;
-          }
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            z-index: 2;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-          .confirm-modal {
-              display: none;
-              position: fixed;
-              z-index: 2;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: 100%;
-              overflow: auto;
-              background-color: rgba(0, 0, 0, 0.4);
-          }
+        .confirm-modal-content {
+            background-color: #fefefe;
+            margin: 25% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            border-radius: 10px;
+            position: relative;
+        }
 
-          .confirm-modal-content {
-              background-color: #fefefe;
-              margin: 25% auto;
-              padding: 20px;
-              border: 1px solid #888;
-              width: 80%;
-              max-width: 300px;
-              border-radius: 10px;
-              position: relative;
-          }
+        .confirm-modal-header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
 
-          .confirm-modal-header {
-              display: flex;
-              justify-content: center;
-              margin-bottom: 10px;
-          }
+        .confirm-modal-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
 
-          .confirm-modal-buttons {
-              display: flex;
-              justify-content: space-around;
-          }
+        .confirm-modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-          .confirm-modal-buttons button {
-              padding: 10px 20px;
-              border: none;
-              border-radius: 20px;
-              cursor: pointer;
-              font-size: 16px;
-          }
+        .confirm-delete-btn {
+            background-color: #153F76;
+            color: white;
+        }
 
-          .confirm-delete-btn {
-              background-color: #153F76;
-              color: white;
-          }
-
-          .confirm-cancel-btn {
-              background-color: #E0E0E0;
-              color: white;
-          }
+        .confirm-cancel-btn {
+            background-color: #E0E0E0;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -233,6 +233,7 @@
         <span class="search-icon"><img src="/images/search.png"></span>
         <input type="text" placeholder="Search">
     </div>
+    <!-- 필터 버튼과 정렬 옵션 -->
     <div class="filter-buttons-container">
         <div class="filter-buttons">
             <button class="active" onclick="filterItems('all', this)">모두</button>
@@ -248,6 +249,7 @@
             </select>
         </div>
     </div>
+    <!-- 식재료 목록 테이블 -->
     <div class="ingredients-section">
         <table class="ingredients-table">
             <thead>
@@ -271,13 +273,14 @@
             </tbody>
         </table>
     </div>
+    <!-- 추가 및 삭제 버튼 -->
     <div class="add-btn-container">
         <div class="delete-btn" id="delete-btn">-</div>
         <div class="add-btn" id="add-btn">+</div>
     </div>
     <div class="bottom-nav">
         <a th:href="@{/home}"><img src="/images/Home.png"></a>
-        <a th:href="@{/food}"><img src="/images/carrot.png"></a>
+        <a th:href="@{/foods}"><img src="/images/carrot.png"></a>
         <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
         <a th:href="@{/events}"><img src="/images/calendar.png"></a>
         <a th:href="@{/my}"><img src="/images/Profile.png"></a>
@@ -347,12 +350,14 @@
 </div>
 
 <script>
+    // 보관 상태의 한글 이름을 저장한 맵
     const locationMap = {
         REFRIGERATED: "냉장",
         FROZEN: "냉동",
         ROOM_TEMPERATURE: "실온"
     };
 
+    // 필요한 요소들을 가져오기
     var addBtn = document.getElementById("add-btn");
     var addModal = document.getElementById("add-modal");
     var editModal = document.getElementById("edit-modal");
@@ -362,16 +367,19 @@
     var confirmDeleteBtn = document.getElementById("confirm-delete-btn");
     var confirmCancelBtn = document.getElementById("confirm-cancel-btn");
 
+    // 추가 버튼 클릭 시 모달 열기
     addBtn.onclick = function() {
         addModal.style.display = "block";
     }
 
+    // 모달 닫기 버튼 클릭 시 모달 닫기
     for (let i = 0; i < modalClose.length; i++) {
         modalClose[i].onclick = function() {
             this.closest('.modal').style.display = "none";
         }
     }
 
+    // 모달 바깥 클릭 시 모달 닫기
     window.onclick = function(event) {
         if (event.target == addModal) {
             addModal.style.display = "none";
@@ -382,6 +390,7 @@
         }
     }
 
+    // 필터 버튼 클릭 시 필터링 적용
     function filterItems(storage, button) {
         var rows = document.querySelectorAll('#ingredients-list tr');
         rows.forEach(row => {
@@ -399,6 +408,7 @@
         button.classList.add('active');
     }
 
+    // 정렬 옵션 변경 시 정렬 적용
     function sortItems() {
         var sortBy = document.getElementById('sort-select').value;
         var rows = Array.from(document.querySelectorAll('#ingredients-list tr'));
@@ -416,6 +426,7 @@
         rows.forEach(row => tbody.appendChild(row));
     }
 
+    // 항목 추가
     function addItem(event) {
         event.preventDefault();
         var form = document.getElementById('add-form');
@@ -439,10 +450,11 @@
         addModal.style.display = "none";
     }
 
+    // 행 클릭 시 수정 모달 열기
     function rowClick(event, row) {
         if (event.target.tagName !== 'INPUT') {
             var form = document.getElementById('edit-form');
-            form['id'].value = row.getAttribute('data-id'); // ID 설정
+            form['id'].value = row.getAttribute('data-id');
             form['name'].value = row.cells[1].textContent;
             form['quantity'].value = row.cells[2].textContent;
             form['expirationDate'].value = row.cells[3].textContent;
@@ -452,6 +464,7 @@
         }
     }
 
+    // 항목 수정 저장
     function saveItem(event) {
         event.preventDefault();
         var form = document.getElementById('edit-form');
@@ -466,50 +479,55 @@
         editModal.style.display = "none";
     }
 
+    // 선택된 항목 삭제
     function deleteSelectedItems() {
-    var checkboxes = document.querySelectorAll('.select-item:checked');
-    var deletePromises = [];
-    checkboxes.forEach(checkbox => {
-        var row = checkbox.closest('tr');
-        var id = row.getAttribute('data-id');
-        console.log('Deleting ingredient with id:', id); // 디버깅용 로그
-        if (id) {
-            deletePromises.push(deleteIngredientFromServer(id));
-            row.remove();
-        } else {
-            console.error('Failed to get ingredient ID for row', row);
-        }
-    });
+        var checkboxes = document.querySelectorAll('.select-item:checked');
+        var deletePromises = [];
+        checkboxes.forEach(checkbox => {
+            var row = checkbox.closest('tr');
+            var id = row.getAttribute('data-id');
+            console.log('Deleting ingredient with id:', id);
+            if (id) {
+                deletePromises.push(deleteIngredientFromServer(id));
+                row.remove();
+            } else {
+                console.error('Failed to get ingredient ID for row', row);
+            }
+        });
 
-    Promise.all(deletePromises).then(() => {
-        confirmModal.style.display = "none";
-    });
-}
+        Promise.all(deletePromises).then(() => {
+            confirmModal.style.display = "none";
+        });
+    }
 
-function deleteIngredientFromServer(id) {
-    return fetch(`/ingredients/delete?id=${id}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }
-    }).then(response => {
-        if (!response.ok) {
-            console.error('Failed to delete ingredient:', id);
-        }
-    });
-}
+    // 서버에서 항목 삭제
+    function deleteIngredientFromServer(id) {
+        return fetch(`/ingredients/delete?id=${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        }).then(response => {
+            if (!response.ok) {
+                console.error('Failed to delete ingredient:', id);
+            }
+        });
+    }
 
-
+    // 삭제 버튼 클릭 시 확인 모달 열기
     deleteBtn.onclick = function() {
         confirmModal.style.display = "block";
     }
 
+    // 확인 모달에서 삭제 버튼 클릭 시 항목 삭제
     confirmDeleteBtn.onclick = deleteSelectedItems;
 
+    // 확인 모달에서 취소 버튼 클릭 시 모달 닫기
     confirmCancelBtn.onclick = function() {
         confirmModal.style.display = "none";
     }
 
+    // 전체 선택 체크박스
     document.getElementById('select-all').addEventListener('click', function() {
         var checkboxes = document.querySelectorAll('.select-item');
         checkboxes.forEach(checkbox => {

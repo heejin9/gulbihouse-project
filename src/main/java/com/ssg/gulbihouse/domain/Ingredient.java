@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-//식재료 정보를 저장하는 엔티티 클래스
+// 식재료 정보를 저장하는 엔티티 클래스
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,7 +17,7 @@ public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
-    private Long id;
+    private Long id; // 식재료 ID
 
     @Column(name = "name", nullable = false)
     private String name; // 식재료 이름

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제철음식 소개</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <style>
+        .month-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .month-selector button {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .month-selector h2 {
+            margin: 0 10px;
+        }
+        .food-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .food-item {
+            margin: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .food-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .food-item p {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="top-nav">
+        <div class="logo">Gulbi House</div>
+        <div class="notification"><img src="images/Bell.png"></div>
+        <div></div>
+    </div>
+    <div class="search-bar">
+        <span class="search-icon"><img src="/images/search.png"></span>
+        <input type="text" placeholder="Search">
+    </div>
+    <main>
+        <div class="month-selector">
+            <button class="prev-month">&#8249;</button>
+            <h2 id="current-month" th:text="${month} + '월'">5월</h2>
+            <button class="next-month">&#8250;</button>
+        </div>
+
+        <section class="seasonal-foods">
+            <div th:each="category : ${categories}">
+                <h3 th:text="${category}">과일</h3>
+                <div class="food-list">
+                    <div th:each="food : ${foods}">
+                        <div th:if="${food.category == category}" class="food-item">
+                            <a th:href="@{/food-details/{id}(id=${food.id})}">
+                                <img th:src="@{${food.imageUrl}}" alt="음식 이미지">
+                            </a>
+                            <p th:text="${food.name}">음식 이름</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="bottom-nav">
+            <a th:href="@{/home}"><img src="/images/Home.png"></a>
+            <a th:href="@{/foods}"><img src="/images/carrot.png"></a>
+            <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
+            <a th:href="@{/events}"><img src="/images/calendar.png"></a>
+            <a th:href="@{/my}"><img src="/images/Profile.png"></a>
+        </div>
+    </footer>
+</div>
+
+<script>
+    const currentMonthElement = document.getElementById('current-month');
+    const prevMonthButton = document.querySelector('.prev-month');
+    const nextMonthButton = document.querySelector('.next-month');
+
+    let currentMonth = parseInt(currentMonthElement.textContent, 10);
+
+    function changeMonth(delta) {
+        currentMonth += delta;
+        if (currentMonth < 1) {
+            currentMonth = 12;
+        } else if (currentMonth > 12) {
+            currentMonth = 1;
+        }
+        currentMonthElement.textContent = `${currentMonth}월`;
+        window.location.href = `/foods?month=${currentMonth}`;
+    }
+
+    prevMonthButton.addEventListener('click', () => {
+        changeMonth(-1);
+    });
+
+    nextMonthButton.addEventListener('click', () => {
+        changeMonth(1);
+    });
+</script>
+</body>
+</html>

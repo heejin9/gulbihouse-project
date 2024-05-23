@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음식 상세 정보</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+
+<body>
+<div class="container">
+    <div class="top-nav">
+        <div class="logo">Gulbi House</div>
+        <div class="notification"><img src="images/Bell.png"></div>
+        <div></div>
+    </div>
+    <div class="search-bar">
+        <span class="search-icon"><img src="/images/search.png"></span>
+        <input type="text" placeholder="Search">
+    </div>
+
+    <header>
+        <nav>
+            <!-- 네비게이션 메뉴 -->
+        </nav>
+    </header>
+
+    <main>
+        <div class="food-details">
+            <h2 th:text="${food.name}">음식 이름</h2>
+            <img th:src="@{${food.imageUrl}}" alt="음식 이미지">
+            <p th:text="'영양 성분: ' + ${food.nutritionInfo}">영양 성분</p>
+            <p th:text="'보관 방법: ' + ${food.storageMethod}">보관 방법</p>
+            <h3>레시피</h3>
+            <p th:utext="${food.recipe}">레시피 정보</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="bottom-nav">
+            <a th:href="@{/home}"><img src="/images/Home.png"></a>
+            <a th:href="@{/foods}"><img src="/images/carrot.png"></a>
+            <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
+            <a th:href="@{/events}"><img src="/images/calendar.png"></a>
+            <a th:href="@{/my}"><img src="/images/Profile.png"></a>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
