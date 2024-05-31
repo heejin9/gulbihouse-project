@@ -44,3 +44,6 @@ bin/
 ### Secret Properties
 .application.properties
 /src/main/resources/application.properties
+
+# .gitignore 파일의 내용
+/application.properties

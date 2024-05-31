@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>gulbi house</title>
-    <!-- 외부 CSS 및 jQuery 라이브러리 로드 -->
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
-        /* 스타일 정의 */
         .note {
             margin: 20px;
             padding: 10px;
@@ -37,6 +35,7 @@
         .note li {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 10px;
             padding: 5px 10px;
             border-top: 1px dashed #ccc;
@@ -65,16 +64,89 @@
         }
 
         .memo-content {
-            min-height: 100px;
+            min-height: 50px;
             overflow: visible;
             padding: 10px;
             text-align: left;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            position: relative;
+        }
+
+        .memo-content p {
+            margin: 0;
         }
 
         .memo-content p::before {
             content: "● ";
             color: black;
             font-size: 10px;
+        }
+
+        .memo-actions {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .memo-actions img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 24px;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        .dropdown-menu button {
+            display: inline-block;
+            padding: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .dropdown-menu button:hover {
+            background-color: #f2f2f2;
+        }
+
+        .memo-add {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .memo-add textarea {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+            margin-right: 10px;
+        }
+
+        .memo-add button {
+            width: 20%;
+            padding: 10px;
+            background-color: #153F76;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
         .bottom-nav {
@@ -96,6 +168,111 @@
             color: #333;
             font-size: 24px;
         }
+
+        .expiration-today {
+            background-color: #FEE2E2;
+        }
+
+        .expiration-3days {
+            background-color: #FEF9C3;
+        }
+
+        .expiration-7days {
+            background-color: #E0F2FE;
+        }
+
+        .expiration-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .shopping-list {
+            position: relative;
+        }
+
+        .shopping-list li {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 5px 10px;
+            border-top: 1px dashed #ccc;
+            position: relative;
+        }
+
+        .shopping-list li:first-child {
+            border-top: none;
+        }
+
+        .shopping-list .item-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .shopping-list .item-actions img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .shopping-list .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 34px;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        .shopping-list .dropdown-menu button {
+            display: inline-block;
+            padding: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .shopping-list .dropdown-menu button:hover {
+            background-color: #f2f2f2;
+        }
+
+        .shopping-list-add {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            background-color: #f2f2f2;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .shopping-list-add textarea {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+            margin-right: 10px;
+        }
+
+        .shopping-list-add button {
+            width: 20%;
+            padding: 10px;
+            background-color: #153F76;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 
@@ -105,69 +282,257 @@
         <div class="logo">gulbi house</div>
         <div class="notification"><img src="images/Bell.png"></div>
     </div>
-
     <div class="search-bar">
         <span class="search-icon"><img src="/images/search.png"></span>
         <input type="text" placeholder="Search">
     </div>
 
-    <!-- 임박재료 리스트 -->
     <div class="note" style="background-color: #f2f2f2;">
         <h3>임박재료</h3>
-        <ul>
-            <li><input type="checkbox" checked> Checked</li>
-            <li><input type="checkbox" checked> Checked</li>
-            <li><input type="checkbox" checked> Checked</li>
+        <ul id="expiring-ingredients-list">
+            <!-- Dynamic content will be injected here -->
         </ul>
     </div>
 
-    <!-- 장바구니 리스트 -->
     <div class="note" style="background-color: #f2f2f2;">
         <h3>장바구니</h3>
-        <ul>
-            <li><input type="checkbox" checked> Checked</li>
-            <li><input type="checkbox" checked> Checked</li>
+        <ul id="shopping-list" class="shopping-list">
+            <!-- Shopping items will be dynamically injected here -->
         </ul>
+        <div class="shopping-list-add">
+            <textarea id="new-item" placeholder="새 항목을 입력하세요"></textarea>
+            <button id="add-item">추가</button>
+        </div>
     </div>
 
-    <!-- 메모장 -->
     <div class="memo">
-        <h3>메모장 <span class="toggle-memo"><img src="/img/bb.png"></span></h3>
-        <div class="memo-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec tellus vitae justo elementum
-                malesuada. Mauris pulvinar nunc vel risus blandit, eget tempor magna viverra. Praesent laoreet velit
-                nec nulla finibus, vel semper neque ultrices. Sed at quam id nulla ullamcorper tincidunt. Integer in
-                erat vitae dui eleifend tincidunt. Donec eget tellus vitae purus convallis convallis.</p>
+        <h3>메모장 <span class="toggle-memo"><img src="/images/bb.png"></span></h3>
+        <div id="memo-list">
+            <!-- Memos will be dynamically injected here -->
         </div>
-        <div class="memo-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec tellus vitae justo elementum
-                malesuada. Mauris pulvinar nunc vel risus blandit, eget tempor magna viverra.</p>
-        </div>
-        <div class="memo-content">
-            <p>ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec tellus vitae justo elementum
-                malesuada. Mauris pulvinar nunc vel risus blandit, eget tempor magna viverra.</p>
+        <div class="memo-add">
+            <textarea id="new-memo" placeholder="새 메모를 입력하세요"></textarea>
+            <button id="add-memo">추가</button>
         </div>
     </div>
 
-    <!-- 하단 내비게이션 -->
     <div class="bottom-nav">
-        <a href="/home3.html"><img src="/images/Home.png"></a>
-        <a href="/food.html"><img src="/images/carrot.png"></a>
-        <a href="/fridge.html"><img src="/images/Fridge.png"></a>
-        <a href="/calendar5.html"><img src="/images/calendar.png"></a>
-        <a href="/my2.html"><img src="/images/Profile.png"></a>
+        <a th:href="@{/home}"><img src="/images/Home.png"></a>
+        <a th:href="@{/foods}"><img src="/images/carrot.png"></a>
+        <a th:href="@{/ingredients}"><img src="/images/Fridge.png"></a>
+        <a th:href="@{/events}"><img src="/images/calendar.png"></a>
+        <a th:href="@{/my}"><img src="/images/Profile.png"></a>
     </div>
 </div>
 
-<!-- jQuery를 사용하여 메모장 토글 기능 추가 -->
 <script>
     $(document).ready(function () {
-        // 메모장 토글 버튼 클릭 시 메모 내용을 토글하는 함수
+        // Memo toggle functionality
         $('.toggle-memo').click(function () {
             $(this).closest('.memo').find('.memo-content').toggle();
         });
+
+        // Dropdown toggle functionality
+        $(document).on('click', '.dropdown-toggle', function () {
+            $(this).siblings('.dropdown-menu').toggle();
+        });
+
+        // Hide dropdown menu when clicking outside
+        $(document).click(function (e) {
+            if (!$(e.target).closest('.memo-actions, .item-actions').length) {
+                $('.dropdown-menu').hide();
+            }
+        });
+
+        // Fetch expiring ingredients and display them
+        fetch('/api/expiring-ingredients')
+            .then(response => response.json())
+            .then(data => {
+                const list = $('#expiring-ingredients-list');
+                data.forEach(item => {
+                    const listItem = $('<li>').text(item.name);
+                    const indicator = $('<span>').addClass('expiration-indicator');
+
+                    if (item.daysToExpiration <= 0) {
+                        indicator.addClass('expiration-today');
+                    } else if (item.daysToExpiration <= 3) {
+                        indicator.addClass('expiration-3days');
+                    } else if (item.daysToExpiration <= 7) {
+                        indicator.addClass('expiration-7days');
+                    }
+
+                    listItem.append(indicator);
+                    list.append(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching expiring ingredients:', error));
+
+        // Fetch memos and display them
+        fetch('/api/memos')
+            .then(response => response.json())
+            .then(data => {
+                const memoList = $('#memo-list');
+                data.forEach(memo => {
+                    const memoContent = $('<div class="memo-content" data-id="' + memo.id + '">')
+                        .append($('<p contenteditable="false">').text(memo.content))
+                        .append('<div class="memo-actions"><img src="/images/dots.png" class="dropdown-toggle" alt="더 보기"><div class="dropdown-menu"><button class="edit-memo">수정</button><button class="delete-memo">삭제</button></div></div>');
+
+                    memoList.append(memoContent);
+                });
+            })
+            .catch(error => console.error('Error fetching memos:', error));
+
+        // Add new memo
+        $('#add-memo').click(function () {
+            const newMemoText = $('#new-memo').val();
+            if (newMemoText) {
+                const newMemo = { content: newMemoText };
+                fetch('/api/memos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newMemo),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const memoContent = $('<div class="memo-content" data-id="' + data.id + '">')
+                        .append($('<p contenteditable="false">').text(data.content))
+                        .append('<div class="memo-actions"><img src="/images/dots.png" class="dropdown-toggle" alt="더 보기"><div class="dropdown-menu"><button class="edit-memo">수정</button><button class="delete-memo">삭제</button></div></div>');
+
+                    $('#memo-list').append(memoContent);
+                    $('#new-memo').val('');
+                })
+                .catch(error => console.error('Error adding memo:', error));
+            }
+        });
+
+        // Edit memo
+        $(document).on('click', '.edit-memo', function () {
+            const memoContent = $(this).closest('.memo-content').find('p');
+            memoContent.attr('contenteditable', 'true').focus();
+            memoContent.on('blur', function () {
+                const id = $(this).closest('.memo-content').data('id');
+                const updatedContent = $(this).text();
+                fetch('/api/memos/' + id, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: updatedContent }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    memoContent.attr('contenteditable', 'false');
+                    console.log('Memo updated:', data);
+                })
+                .catch(error => console.error('Error updating memo:', error));
+            });
+            $('.dropdown-menu').hide();
+        });
+
+        // Delete memo
+        $(document).on('click', '.delete-memo', function () {
+            if (confirm('메모를 삭제하시겠습니까?')) {
+                const memoContent = $(this).closest('.memo-content');
+                const id = memoContent.data('id');
+                fetch('/api/memos/' + id, {
+                    method: 'DELETE',
+                })
+                .then(() => {
+                    memoContent.remove();
+                    console.log('Memo deleted');
+                })
+                .catch(error => console.error('Error deleting memo:', error));
+            }
+            $('.dropdown-menu').hide();
+        });
+
+        // Fetch shopping items and display them
+        fetch('/api/shopping-items')
+            .then(response => response.json())
+            .then(data => {
+                const shoppingList = $('#shopping-list');
+                data.forEach(item => {
+                    const listItem = $('<li data-id="' + item.id + '">')
+                        .append($('<input type="checkbox">').prop('checked', item.completed))
+                        .append($('<span contenteditable="false">').text(item.content))
+                        .append('<div class="item-actions"><img src="/images/dots.png" class="dropdown-toggle" alt="더 보기"><div class="dropdown-menu"><button class="edit-item">수정</button><button class="delete-item">삭제</button></div></div>');
+
+                    shoppingList.append(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching shopping items:', error));
+
+        // Add new shopping list item
+        $('#add-item').click(function () {
+            const newItemText = $('#new-item').val();
+            if (newItemText) {
+                const newItem = { content: newItemText, completed: false };
+                fetch('/api/shopping-items', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newItem),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const listItem = $('<li data-id="' + data.id + '">')
+                        .append($('<input type="checkbox">').prop('checked', data.completed))
+                        .append($('<span contenteditable="false">').text(data.content))
+                        .append('<div class="item-actions"><img src="/images/dots.png" class="dropdown-toggle" alt="더 보기"><div class="dropdown-menu"><button class="edit-item">수정</button><button class="delete-item">삭제</button></div></div>');
+
+                    $('#shopping-list').append(listItem);
+                    $('#new-item').val('');
+                })
+                .catch(error => console.error('Error adding shopping item:', error));
+            }
+        });
+
+        // Edit shopping list item
+        $(document).on('click', '.edit-item', function () {
+            const itemContent = $(this).closest('li').find('span');
+            itemContent.attr('contenteditable', 'true').focus();
+            itemContent.on('blur', function () {
+                const id = $(this).closest('li').data('id');
+                const updatedContent = $(this).text();
+                fetch('/api/shopping-items/' + id, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: updatedContent, completed: $(this).siblings('input[type="checkbox"]').prop('checked') }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    itemContent.attr('contenteditable', 'false');
+                    console.log('Shopping item updated:', data);
+                })
+                .catch(error => console.error('Error updating shopping item:', error));
+            });
+            $('.dropdown-menu').hide();
+        });
+
+        // Delete shopping list item
+        $(document).on('click', '.delete-item', function () {
+            if (confirm('항목을 삭제하시겠습니까?')) {
+                const listItem = $(this).closest('li');
+                const id = listItem.data('id');
+                fetch('/api/shopping-items/' + id, {
+                    method: 'DELETE',
+                })
+                .then(() => {
+                    listItem.remove();
+                    console.log('Shopping item deleted');
+                })
+                .catch(error => console.error('Error deleting shopping item:', error));
+            }
+            $('.dropdown-menu').hide();
+        });
     });
 </script>
+
 </body>
 
 </html>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>내 정보</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <style>
+        /* 스타일 정의 */
         .profile-image {
             width: 100px;
             height: 100px;
@@ -14,13 +14,11 @@
             overflow: hidden;
             margin: 10px auto;
         }
-
         .profile-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         hr {
             border: none;
             height: 1px;
@@ -28,31 +26,26 @@
             margin: 10px auto;
             width: 85%;
         }
-
         .friend-list-title {
             margin-left: 20px;
         }
-
         .btn-plus {
             margin-left: 10px;
             border-radius: 5px;
             cursor: pointer;
         }
-
         .d-flex {
             display: flex;
             justify-content: flex-start;
             align-items: center;
             margin: auto;
         }
-
         .friend-list {
             list-style-type: none;
             padding: 0;
             display: flex;
             flex-wrap: wrap;
         }
-
         .friend-item {
             display: flex;
             flex-direction: column;
@@ -60,7 +53,6 @@
             margin-right: 20px;
             margin: auto;
         }
-
         .friend-image {
             width: 50px;
             height: 50px;
@@ -68,26 +60,22 @@
             overflow: hidden;
             margin-right: 10px;
         }
-
         .friend-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         .switch {
             position: relative;
             display: inline-block;
             width: 60px;
             height: 34px;
         }
-
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-
         .slider {
             position: absolute;
             cursor: pointer;
@@ -98,7 +86,6 @@
             background-color: #ccc;
             transition: .4s;
         }
-
         .slider:before {
             position: absolute;
             content: "";
@@ -109,27 +96,21 @@
             background-color: white;
             transition: .4s;
         }
-
         input:checked + .slider {
             background-color: #153F76;
         }
-
         input:focus + .slider {
             box-shadow: 0 0 1px #2196F3;
         }
-
         input:checked + .slider:before {
             transform: translateX(26px);
         }
-
         .slider.round {
             border-radius: 34px;
         }
-
         .slider.round:before {
             border-radius: 50%;
         }
-
         .btn-modi {
             background-color: #153F76;
             color: white;
@@ -140,7 +121,6 @@
             width: 150px;
             margin: 10px auto;
         }
-
         .btn-danger {
             background-color: #153F76;
             color: white;
@@ -148,30 +128,25 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            width: 335px;
+            width: 80%;
             margin: 50px auto;
         }
-
         .btn-danger:active {
             background-color: gray;
             border-color: gray;
         }
-
         .btn-primary {
             background-color: #153F76;
             border-color: #153F76;
         }
-
         .notification-section {
             margin: 10px auto;
             width: 80%;
         }
-
         .emoji-area {
             margin-left: 10px;
             margin-bottom: 30px;
         }
-
         .notification-item {
             display: flex;
             align-items: center;
@@ -181,18 +156,15 @@
             margin: 10px 0;
             border-radius: 10px;
         }
-
         .notification-item .emoji-area {
             margin-right: 20px;
             flex-shrink: 0;
         }
-
         .notification-item .text-area {
             flex-grow: 1;
             margin-right: 10px;
             text-align: left;
         }
-
         .notification-item .switch-area {
             flex-shrink: 0;
         }
@@ -210,7 +182,6 @@
             background-color: rgb(0, 0, 0);
             background-color: rgba(0, 0, 0, 0.4);
         }
-
         .modal-content {
             background-color: #fefefe;
             margin: 15% auto;
@@ -220,25 +191,21 @@
             max-width: 300px;
             border-radius: 10px;
         }
-
         .modal-title {
             margin-bottom: 20px;
             text-align: center;
             font-size: 18px;
             font-weight: bold;
         }
-
         .form-group {
             margin-bottom: 15px;
             text-align: left;
         }
-
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-
         .form-group input {
             width: calc(100% - 20px);
             padding: 10px;
@@ -246,7 +213,6 @@
             border-radius: 50px;
             outline: none;
         }
-
         .btn-secondary,
         .btn-primary {
             display: inline-block;
@@ -256,17 +222,14 @@
             cursor: pointer;
             margin-top: 10px;
         }
-
         .btn-secondary {
             background-color: #ddd;
             color: #333;
         }
-
         .btn-primary {
             background-color: #153F76;
             color: white;
         }
-
         .close {
             color: #aaa;
             float: right;
@@ -274,26 +237,50 @@
             font-weight: bold;
             cursor: pointer;
         }
-
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
+        .qr-code-section {
+            margin: 10px auto;
+            width: 75%;
+            text-align: center;
+            border: 1px solid gray;
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .qr-code-section .text-area {
+            flex-grow: 1;
+            margin-right: 10px;
+            text-align: left;
+        }
+        .qr-code-section .qr-area {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qr-code-section .qr-area img {
+            width: 100px;
+            height: 100px;
+        }
     </style>
 </head>
-
 <body>
 <div class="container">
     <div class="top-nav">
         <div class="logo">gulbi house</div>
-        <div class="notification"><img src="images/Bell.png"></div>
+        <div class="notification"><img src="/images/Bell.png" onclick="window.location.href='/notifications'"></div>
     </div>
-
     <div class="profile-section">
         <div class="profile-image">
-            <img th:src="@{${user.profileImage}}" alt="Profile Image">
+            <img th:src="${profileImage}" alt="Profile Image">
         </div>
         <h4 th:text="${user.nickname}">My Nickname</h4>
         <button class="btn btn-modi" th:onclick="|window.location.href='@{/profile}'|">내 정보 수정</button>
@@ -305,22 +292,7 @@
             <button class="btn-plus" id="openModalBtn">+</button>
         </div>
         <ul class="friend-list">
-            <li class="friend-item">
-                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
-                <div class="friend-nickname">Friend 1</div>
-            </li>
-            <li class="friend-item">
-                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
-                <div class="friend-nickname">Friend 2</div>
-            </li>
-            <li class="friend-item">
-                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
-                <div class="friend-nickname">Friend 3</div>
-            </li>
-            <li class="friend-item">
-                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
-                <div class="friend-nickname">Friend 4</div>
-            </li>
+            <!-- 친구 목록이 여기 표시됩니다 -->
         </ul>
     </div>
     <!-- Modal -->
@@ -340,38 +312,34 @@
             </div>
         </div>
     </div>
-
     <div class="notification-section">
         <div class="notification-item">
             <div class="emoji-area"><img src="/images/bell.png"></div>
             <div class="text-area">
-                <p style="font-weight: bold;">알림설정</p>
-                <p>Get important notifications...</p>
+                <p style="font-weight: bold;">알림 설정</p>
+                <p>유통기한 알림을 받습니다.</p>
             </div>
             <div class="switch-area">
                 <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                </label>
-            </div>
-        </div>
-        <div class="notification-item">
-            <div class="emoji-area"><img src="/images/bell.png"></div>
-            <div class="text-area">
-                <p style="font-weight: bold;">알림설정</p>
-                <p>Get important notifications...</p>
-            </div>
-            <div class="switch-area">
-                <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" id="expiryNotificationToggle" checked>
                     <span class="slider round"></span>
                 </label>
             </div>
         </div>
     </div>
 
-    <button class="btn btn-danger" id="logout-button">로그아웃</button>
+    <!-- QR 코드 섹션 추가 -->
+    <div class="qr-code-section">
+        <div class="text-area">
+            <p style="font-weight: bold;">내 QR 코드</p>
+            <p>아래 QR 코드를 스캔하여 냉장고 속 재료를 확인하세요.</p>
+        </div>
+        <div class="qr-area">
+            <img th:src="@{/api/qrcode}" alt="QR Code">
+        </div>
+    </div>
 
+    <button class="btn btn-danger" id="logout-button">로그아웃</button>
     <div class="bottom-nav">
         <a th:href="@{/home}"><img src="/images/Home.png"></a>
         <a th:href="@{/foods}"><img src="/images/carrot.png"></a>
@@ -380,9 +348,11 @@
         <a th:href="@{/my}"><img src="/images/Profile.png"></a>
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // 사용자 ID 설정 (예: 백엔드에서 사용자 ID를 전달하는 방법)
+    const userId = [[${user.id}]]; // 백엔드에서 전달된 사용자 ID를 설정합니다.
+
     // Modal 기능
     var modal = document.getElementById("friendAddModal");
     var openModalBtn = document.getElementById("openModalBtn");
@@ -407,18 +377,6 @@
         }
     }
 
-    // 친구 삭제 기능
-    const friendItems = document.querySelectorAll('.friend-item');
-    friendItems.forEach(friendItem => {
-        const friendImage = friendItem.querySelector('.friend-image');
-        friendImage.addEventListener('click', () => {
-            const confirmDelete = confirm('친구를 삭제하시겠습니까?');
-            if (confirmDelete) {
-                friendItem.remove();
-            }
-        });
-    });
-
     // 친구 추가 기능
     const addFriendBtn = document.getElementById('addFriendBtn');
     const friendNickname = document.getElementById('friendNickname');
@@ -427,16 +385,100 @@
     addFriendBtn.addEventListener('click', () => {
         const newNickname = friendNickname.value.trim();
         if (newNickname) {
+            fetch(`/api/friends?userId=${userId}&friendNickname=${newNickname}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Friend not found');
+                }
+                return response.json();
+            })
+            .then(friend => {
+                const newFriendItem = document.createElement('li');
+                newFriendItem.classList.add('friend-item');
+                newFriendItem.innerHTML = `
+                    <div class="friend-image"><img src="data:image/jpeg;base64,${friend.profileImage}" alt="Profile Image"></div>
+                    <div class="friend-nickname">${friend.nickname}</div>
+                `;
+                newFriendItem.querySelector('.friend-image').addEventListener('click', () => {
+                    const confirmDelete = confirm('친구를 삭제하시겠습니까?');
+                    if (confirmDelete) {
+                        fetch(`/api/friends?userId=${userId}&friendNickname=${newNickname}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Friend not deleted');
+                            }
+                            friendList.removeChild(newFriendItem);
+                        })
+                        .catch(error => {
+                            console.error('Error deleting friend:', error);
+                            alert('친구를 삭제할 수 없습니다.');
+                        });
+                    }
+                });
+                friendList.appendChild(newFriendItem);
+                friendNickname.value = '';
+                modal.style.display = "none";
+            })
+            .catch(error => {
+                console.error('Error adding friend:', error);
+                alert('친구를 찾을 수 없습니다.');
+            });
+        }
+    });
+
+    // 친구 목록 불러오기
+    fetch(`/api/friends?userId=${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(friend => {
             const newFriendItem = document.createElement('li');
             newFriendItem.classList.add('friend-item');
             newFriendItem.innerHTML = `
-                <div class="friend-image"><img src="https://via.placeholder.com/100"></div>
-                <div class="friend-nickname">${newNickname}</div>
+                <div class="friend-image"><img src="data:image/jpeg;base64,${friend.profileImage}" alt="Profile Image"></div>
+                <div class="friend-nickname">${friend.nickname}</div>
             `;
+            newFriendItem.querySelector('.friend-image').addEventListener('click', () => {
+                const confirmDelete = confirm('친구를 삭제하시겠습니까?');
+                if (confirmDelete) {
+                    fetch(`/api/friends?userId=${userId}&friendNickname=${friend.nickname}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Friend not deleted');
+                        }
+                        friendList.removeChild(newFriendItem);
+                    })
+                    .catch(error => {
+                        console.error('Error deleting friend:', error);
+                        alert('친구를 삭제할 수 없습니다.');
+                    });
+                }
+            });
             friendList.appendChild(newFriendItem);
-            friendNickname.value = '';
-            modal.style.display = "none";
-        }
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching friends:', error);
+        alert('친구 목록을 불러올 수 없습니다.');
     });
 
     // 로그아웃 기능
@@ -460,7 +502,28 @@
             alert('로그아웃 중 오류 발생');
         });
     });
-</script>
-</body>
 
+    // 유통기한 알림 설정 기능
+    const expiryNotificationToggle = document.getElementById('expiryNotificationToggle');
+    expiryNotificationToggle.addEventListener('change', () => {
+        const enabled = expiryNotificationToggle.checked;
+        fetch('/settings/notifications/expiry', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userId: userId, enabled: enabled })
+        }).then(response => {
+            if (!response.ok) {
+                alert('알림 설정을 업데이트하는 중 오류가 발생했습니다.');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('알림 설정을 업데이트하는 중 오류가 발생했습니다.');
+        });
+    });
+
+</script>
+
+</body>
 </html>

@@ -48,17 +48,18 @@ public class WebSecurityConfig {
                 // 인증, 인가 설정
                 .authorizeRequests(auth -> auth
                         .requestMatchers(   // 특정 요청과 일치하는 url에 대한 엑세스 설정
-                                new AntPathRequestMatcher("/index"),
-                                new AntPathRequestMatcher("/login"),
-                                new AntPathRequestMatcher("/signup"),
-                                new AntPathRequestMatcher("/user")
+//                                new AntPathRequestMatcher("/index"),
+//                                new AntPathRequestMatcher("/login"),
+//                                new AntPathRequestMatcher("/signup"),
+//                                new AntPathRequestMatcher("/user")
+                                "/index", "/login", "/signup", "/user", "/newpassword", "/searchpassword", "/"
                         ).permitAll()   // 누구나 접근 가능(위에서 설정한 url로 요청이 오면 인증/인가 없이도 접근)
                         .anyRequest()   // 위에 설정한 url이외의 요청에 대해 설정
                         .authenticated())  // 별도의 인가는 필요하지 않지만 인증이 성공된 상태여야 접근
                 // 폼 기반 로그인 설정
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .defaultSuccessUrl("/ingredients") // 로그인이 되었을 때 이동할 경로 설정
+                        .defaultSuccessUrl("/home") // 로그인이 되었을 때 이동할 경로 설정
                 )
                 //로그아웃 설정
                 .logout(logout -> logout

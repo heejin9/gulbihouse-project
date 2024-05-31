@@ -15,6 +15,12 @@ repositories {
 
 
 dependencies {
+
+    //QRCode
+    implementation 'net.glxn.qrgen:javase:2.6.0'
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.google.zxing:javase:3.4.1'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -34,10 +40,18 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     // XML 문서와 Java 객체 간 매핑 자동화
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
+    //LocalDate를 지원하도록 ObjectMapper를 설정
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+
+
 }
 
 
 test {
     useJUnitPlatform()
 }
-

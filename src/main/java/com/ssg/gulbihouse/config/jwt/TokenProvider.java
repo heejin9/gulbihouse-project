@@ -35,7 +35,7 @@ public class TokenProvider {
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)       // 헤더 typ : JWT
                 // 내용 iss: @gmail.com(properties 파일에서 설정한 값/ 발급자)
-                .setIssuer(jwtProperties.getIssuer())
+                .setIssuer(jwtProperties.getIssuer())       // 발급자 설정
                 .setIssuedAt(now)       // 내용 iat: 현재 시간(발급일시)
                 .setExpiration(expiry)      // 내용 exp: expire 멤버 변숫값(만료 일시)
                 .setSubject(user.getEmail())        // 내용 sub: 유저의 이메일(토큰 제목)

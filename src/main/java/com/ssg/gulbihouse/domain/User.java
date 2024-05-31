@@ -1,13 +1,16 @@
 package com.ssg.gulbihouse.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Blob;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 // 사용자 정보를 저장하는 엔티티 클래스
 @Table(name = "user")
@@ -36,7 +39,26 @@ public class User implements UserDetails {
     private Role role; // 사용자 역할
 
     @Lob
+    @Column(columnDefinition = "BLOB")
     private byte[] profileImage; // 프로필 이미지
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<Event> events; // 사용자의 이벤트 목록
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Ingredient> ingredients; // 사용자의 식재료 목록
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Friend> friends; // 사용자의 친구 목록
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<Memo> memos;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<ShoppingItem> shoppingItems;
 
     // 사용자 생성자
     @Builder

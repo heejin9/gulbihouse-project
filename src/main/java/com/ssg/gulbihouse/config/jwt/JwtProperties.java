@@ -13,6 +13,6 @@ import org.springframework.stereotype.Component;
 // 자바 클래스에 프로피티 값을 가져와서 사용
 @ConfigurationProperties("jwt")
 public class JwtProperties {
-    private String issuer;
-    private String secretKey;
+    private String issuer; // JWT 발급자
+    private String secretKey; // JWT 서명에 사용될 비밀키
 }

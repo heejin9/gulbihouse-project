@@ -51,4 +51,6 @@ public class IngredientController {
         ingredientService.delete(id);
         return "redirect:/ingredients";
     }
+
+
 }

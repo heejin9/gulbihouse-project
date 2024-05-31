@@ -23,7 +23,6 @@ public class FoodController {
         this.recipeService = recipeService;
     }
 
-    // 월별 음식 목록을 가져오는 메서드
     @GetMapping("/foods")
     public String getFoodsByMonth(@RequestParam(name = "month", required = false, defaultValue = "1") int month, Model model) {
         List<SeasonalFood> foods = seasonalFoodService.getFoodsByMonth(month);
@@ -34,9 +33,8 @@ public class FoodController {
         return "foods";
     }
 
-    // 특정 음식의 상세 정보를 가져오는 메서드
     @GetMapping("/foods/{id}")
-    public String getFoodDetails(@PathVariable Long id, Model model) {
+    public String getFoodDetails(@PathVariable("id") Long id, Model model) {
         SeasonalFood food = seasonalFoodService.getFoodById(id);
         String recipe = recipeService.getRecipe(food.getName());
         food.setRecipe(recipe);

@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor // 생성자 주입을 자동으로 생성해주는 롬복 어노테이션
+@RequiredArgsConstructor
 public class EventService {
-    private final EventRepository eventRepository; // 이벤트 리포지토리
-    private final UserRepository userRepository; // 사용자 리포지토리
+    private final EventRepository eventRepository;
+    private final UserRepository userRepository;
 
-    // 특정 사용자 ID로 이벤트 목록을 조회하는 메서드
+    // 사용자 ID로 이벤트 목록을 가져오는 메서드
     public List<Event> findAllByUserId(Long userId) {
         return eventRepository.findByUserId(userId);
     }
 
-    // 이벤트를 저장하는 메서드
+    // 새로운 이벤트를 저장하는 메서드
     public Event save(Event event, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));

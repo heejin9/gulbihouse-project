@@ -12,6 +12,7 @@ public class SeasonalFood {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String englishName;  // 영어 이름 필드 추가
     private String category;
     private int month;
     private String imageUrl;
@@ -23,8 +24,9 @@ public class SeasonalFood {
     public SeasonalFood() {}
 
     // 모든 필드를 포함한 생성자
-    public SeasonalFood(String name, String category, int month, String imageUrl, String storageMethod, String nutritionInfo) {
+    public SeasonalFood(String name, String englishName, String category, int month, String imageUrl, String storageMethod, String nutritionInfo) {
         this.name = name;
+        this.englishName = englishName;  // 필드 초기화
         this.category = category;
         this.month = month;
         this.imageUrl = imageUrl;
@@ -47,6 +49,14 @@ public class SeasonalFood {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEnglishName() {
+        return englishName;
+    }
+
+    public void setEnglishName(String englishName) {
+        this.englishName = englishName;
     }
 
     public String getCategory() {

@@ -84,10 +84,6 @@
         <div class="logo">gulbi house</div>
         <div class="notification"><img src="images/Bell.png"></div>
     </div>
-    <div class="search-bar">
-        <span class="search-icon"><img src="/images/search.png"></span>
-        <input type="text" placeholder="검색">
-    </div>
     <!-- 캘린더와 이벤트 목록을 보여주는 폼 -->
     <form>
         <div class="row justify-content-center my-4">
@@ -159,41 +155,46 @@
         const calendarEl = document.getElementById('calendar');
         const eventListEl = document.getElementById('eventList');
         const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth', // 초기 뷰를 월별 달력으로 설정
+            initialView: 'dayGridMonth',
             headerToolbar: {
-                left: 'prev,next today',
+                left: 'prev,next',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'dayGridMonth,today'
             },
-            editable: true, // 이벤트 수정 가능
-            selectable: true, // 날짜 선택 가능
+            editable: true,
+            selectable: true,
             selectMirror: true,
             dayMaxEvents: true,
-            events: fetchEvents, // 이벤트를 가져오는 함수 설정
-            eventColor: '#153F76', // 이벤트 색상 설정
+            events: fetchEvents, // 이벤트를 가져오는 함수
+            eventColor: '#153F76',
+            // 시간과 날짜 표시를 제거하여 제목만 표시하도록 설정
+            eventTimeFormat: {}, // 시간을 완전히 숨김
+            eventContent: function(arg) {
+                return { html: '<div class="fc-event-title">' + arg.event.title + '</div>' };
+            },
             select: function (info) {
                 const formattedDate = info.startStr;
-                showEventModal(formattedDate, null); // 이벤트 추가 모달 표시
+                showEventModal(formattedDate, null); // 이벤트 모달을 표시하는 함수 호출
             },
             eventClick: function (info) {
                 const event = info.event;
-                showEventModal(event.startStr, event.endStr, event.title, event.id); // 이벤트 수정 모달 표시
+                showEventModal(event.startStr, event.endStr, event.title, event.id); // 이벤트 클릭 시 모달 표시
             },
             eventChange: function (info) {
                 const event = info.event;
                 updateEvent(event.id, {
                     title: event.title,
-                    start: event.start,
-                    end: event.end
-                }); // 이벤트 수정 시 업데이트
+                    start: event.start.toISOString(),
+                    end: event.end ? event.end.toISOString() : null
+                }); // 이벤트 변경 시 업데이트 함수 호출
             }
         });
 
-        calendar.render(); // 캘린더를 화면에 렌더링
+        calendar.render();
 
         const eventModal = new bootstrap.Modal(document.getElementById('eventModal'), {});
 
-        // 이벤트 추가/수정 모달을 표시하는 함수
+        // 이벤트 모달을 표시하는 함수
         function showEventModal(startDate, endDate = null, title = '', id = '') {
             $('#eventTitle').val(title);
             $('#eventStart').val(startDate);
@@ -202,7 +203,6 @@
             eventModal.show();
         }
 
-        // 저장 버튼 클릭 시 이벤트를 저장 또는 업데이트하는 함수
         $('#saveEvent').click(function () {
             const title = $('#eventTitle').val().trim();
             const startDate = $('#eventStart').val();
@@ -221,19 +221,37 @@
             };
 
             if (id) {
-                updateEvent(id, eventData); // 기존 이벤트 업데이트
+                updateEvent(id, eventData); // 이벤트 업데이트 함수 호출
             } else {
-                createEvent(eventData); // 새로운 이벤트 생성
+                createEvent(eventData); // 이벤트 생성 함수 호출
             }
         });
 
-        // 서버에서 이벤트 목록을 가져와 캘린더에 추가하는 함수
+        // 이벤트를 가져오는 함수
         function fetchEvents(fetchInfo, successCallback, failureCallback) {
             fetch('/events/api')
                 .then(response => response.json())
                 .then(events => {
-                    renderEventList(events); // 이벤트 목록을 화면에 렌더링
-                    successCallback(events); // FullCalendar에 이벤트 전달
+                    renderEventList(events); // 이벤트 목록 렌더링 함수 호출
+                    successCallback(events.map(event => {
+                        let startDate = event.start;
+                        let endDate = event.end;
+
+                        if (event.start && typeof event.start !== 'string') {
+                            startDate = new Date(event.start).toISOString().split('T')[0]; // Date 객체를 문자열로 변환
+                        }
+
+                        if (event.end && typeof event.end !== 'string') {
+                            endDate = new Date(event.end).toISOString().split('T')[0]; // Date 객체를 문자열로 변환
+                        }
+
+                        return {
+                            id: event.id,
+                            title: event.title,
+                            start: startDate, // 시간 부분 제거된 날짜 문자열
+                            end: endDate // 시간 부분 제거된 날짜 문자열 또는 null
+                        };
+                    }));
                 })
                 .catch(error => {
                     console.error('Error fetching events:', error);
@@ -241,7 +259,8 @@
                 });
         }
 
-        // 새로운 이벤트를 서버에 저장하고 캘린더에 추가하는 함수
+
+        // 이벤트를 생성하는 함수
         function createEvent(event) {
             fetch('/events/api', {
                 method: 'POST',
@@ -250,15 +269,20 @@
                 },
                 body: JSON.stringify(event),
             })
-            .then(response => response.json())
-            .then(newEvent => {
-                calendar.addEvent(newEvent); // 새로운 이벤트를 캘린더에 추가
-                eventModal.hide(); // 모달 숨기기
-                refetchEvents(); // 이벤트 목록 다시 가져오기
-            });
+                .then(response => response.json())
+                .then(newEvent => {
+                    calendar.addEvent({
+                        id: newEvent.id,
+                        title: newEvent.title,
+                        start: new Date(newEvent.start),
+                        end: newEvent.end ? new Date(newEvent.end) : null
+                    });
+                    eventModal.hide();
+                    refetchEvents(); // 이벤트 목록 갱신 함수 호출
+                });
         }
 
-        // 기존 이벤트를 서버에 업데이트하고 캘린더를 갱신하는 함수
+        // 이벤트를 업데이트하는 함수
         function updateEvent(id, event) {
             fetch(`/events/api/${id}`, {
                 method: 'PUT',
@@ -267,43 +291,48 @@
                 },
                 body: JSON.stringify(event),
             })
-            .then(response => response.json())
-            .then(updatedEvent => {
-                const eventObj = calendar.getEventById(id);
-                eventObj.setProp('title', updatedEvent.title); // 이벤트 제목 업데이트
-                eventObj.setDates(updatedEvent.start, updatedEvent.end); // 이벤트 날짜 업데이트
-                eventModal.hide(); // 모달 숨기기
-                refetchEvents(); // 이벤트 목록 다시 가져오기
-            });
+                .then(response => response.json())
+                .then(updatedEvent => {
+                    const eventObj = calendar.getEventById(id);
+                    eventObj.setProp('title', updatedEvent.title);
+                    eventObj.setDates(new Date(updatedEvent.start), updatedEvent.end ? new Date(updatedEvent.end) : null);
+                    eventModal.hide();
+                    refetchEvents(); // 이벤트 목록 갱신 함수 호출
+                });
         }
 
-        // 이벤트를 서버에서 삭제하고 캘린더에서 제거하는 함수
+        // 이벤트를 삭제하는 함수
         function deleteEvent(id) {
             fetch(`/events/api/${id}`, {
                 method: 'DELETE',
             })
-            .then(() => {
-                const eventObj = calendar.getEventById(id);
-                eventObj.remove(); // 캘린더에서 이벤트 제거
-                refetchEvents(); // 이벤트 목록 다시 가져오기
-            });
+                .then(() => {
+                    const eventObj = calendar.getEventById(id);
+                    eventObj.remove();
+                    refetchEvents(); // 이벤트 목록 갱신 함수 호출
+                });
         }
 
-        // 서버에서 최신 이벤트 목록을 다시 가져와 캘린더와 이벤트 목록을 갱신하는 함수
+        // 이벤트 목록을 다시 가져오는 함수
         function refetchEvents() {
             fetch('/events/api')
                 .then(response => response.json())
                 .then(events => {
-                    calendar.removeAllEvents(); // 모든 이벤트 제거
-                    calendar.addEventSource(events); // 새로운 이벤트 목록 추가
-                    renderEventList(events); // 이벤트 목록을 화면에 렌더링
+                    calendar.removeAllEvents();
+                    calendar.addEventSource(events.map(event => ({
+                        id: event.id,
+                        title: event.title,
+                        start: new Date(event.start),
+                        end: event.end ? new Date(event.end) : null
+                    })));
+                    renderEventList(events); // 이벤트 목록 렌더링 함수 호출
                 })
                 .catch(error => {
                     console.error('Error refetching events:', error);
                 });
         }
 
-        // 서버에서 가져온 이벤트 목록을 카드 형식으로 렌더링하는 함수
+        // 이벤트 목록을 렌더링하는 함수
         function renderEventList(events) {
             eventListEl.innerHTML = '';
             if (events.length === 0) {
@@ -343,7 +372,7 @@
                     deleteButton.className = 'btn-delete';
                     deleteButton.textContent = '삭제';
                     deleteButton.onclick = function () {
-                        deleteEvent(event.id); // 삭제 버튼 클릭 시 이벤트 삭제
+                        deleteEvent(event.id); // 이벤트 삭제 함수 호출
                     };
 
                     cardContent.appendChild(cardTitle);
@@ -356,12 +385,12 @@
 
                     card.appendChild(cardRow);
 
-                    eventListEl.appendChild(card); // 이벤트 목록에 카드 추가
+                    eventListEl.appendChild(card);
                 });
             }
         }
 
-        refetchEvents(); // 초기 이벤트 목록 가져오기
+        refetchEvents(); // 페이지 로드 시 이벤트 목록을 처음으로 가져오는 함수 호출
     });
 </script>
 </body>

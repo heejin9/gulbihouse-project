@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 // 회원가입, 로그인 화면으로 연결하고 사용자가 실제로 볼 수 있는 화면
+//로그인 및 회원가입 페이지로의 라우팅을 관리
 @Controller
 public class UserViewController {
     @GetMapping("/login")

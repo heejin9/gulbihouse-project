@@ -95,7 +95,6 @@
             margin: 50px auto;
         }
     </style>
-
 </head>
 
 <body>
@@ -105,34 +104,34 @@
         <h2 class="title-center">회원가입</h2>
     </div>
     <div class="input-container">
-        <form th:action="@{/user}" method="POST">
+        <form th:action="@{/user}" method="POST" onsubmit="return validateForm()">
             <div class="input-row">
                 <label for="username">닉네임</label>
-                <input id="username" type="text" placeholder="닉네임 입력 (최대 7자)" name="nickname">
+                <input id="username" type="text" placeholder="닉네임 입력 (최소 2자)" name="nickname" required>
             </div>
             <div class="input-row">
                 <label for="email">아이디 (이메일)</label>
                 <div class="input-field">
-                    <input id="email" type="email" placeholder="이메일 주소 입력" name="email">
-                    <button class="auth-request">인증 요청</button>
+                    <input id="email" type="email" placeholder="이메일 주소 입력" name="email" required>
+                    <button type="button" class="auth-request">인증 요청</button>
                 </div>
             </div>
             <div class="input-row">
                 <label for="verification-code">인증번호</label>
                 <div class="input-field">
                     <input id="verification-code" type="verification-code" placeholder="인증번호 4자리 입력">
-                    <button class="confirm">확인</button>
+                    <button type="button" class="confirm">확인</button>
                 </div>
             </div>
             <div class="input-row">
                 <label for="new-password">비밀번호</label>
-                <input id="new-password" type="password" placeholder="새로운 비밀번호 입력" name="password">
+                <input id="new-password" type="password" placeholder="새로운 비밀번호 입력" name="password" required>
             </div>
             <div class="input-row">
                 <label for="confirm-password">비밀번호 확인</label>
-                <input id="confirm-password" type="password" placeholder="비밀번호 재입력">
+                <input id="confirm-password" type="password" placeholder="비밀번호 재입력" required>
             </div>
-            <button>가입하기</button>
+            <button type="submit">가입하기</button>
         </form>
     </div>
     <p></p>

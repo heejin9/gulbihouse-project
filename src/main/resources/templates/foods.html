@@ -51,10 +51,10 @@
         <div class="notification"><img src="images/Bell.png"></div>
         <div></div>
     </div>
-    <div class="search-bar">
-        <span class="search-icon"><img src="/images/search.png"></span>
-        <input type="text" placeholder="Search">
-    </div>
+<!--    <div class="search-bar">-->
+<!--        <span class="search-icon"><img src="/images/search.png"></span>-->
+<!--        <input type="text" placeholder="Search">-->
+<!--    </div>-->
     <main>
         <div class="month-selector">
             <button class="prev-month">&#8249;</button>
@@ -68,7 +68,7 @@
                 <div class="food-list">
                     <div th:each="food : ${foods}">
                         <div th:if="${food.category == category}" class="food-item">
-                            <a th:href="@{/food-details/{id}(id=${food.id})}">
+                            <a th:href="@{/foods/{id}(id=${food.id})}">
                                 <img th:src="@{${food.imageUrl}}" alt="음식 이미지">
                             </a>
                             <p th:text="${food.name}">음식 이름</p>
