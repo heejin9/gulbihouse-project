@@ -9,4 +9,6 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long> {
     // 특정 사용자 ID로 이벤트 목록을 찾는 메서드
     List<Event> findByUserId(Long userId);
+    List<Event> findByTitleContaining(String title);
+
 }

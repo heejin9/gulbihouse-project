@@ -9,4 +9,7 @@ import java.util.List;
 public interface ShoppingItemRepository extends JpaRepository<ShoppingItem, Long> {
     // 사용자 ID를 기반으로 쇼핑 아이템 목록 조회
     List<ShoppingItem> findByUserId(Long userId);
+
+    List<ShoppingItem> findByContentContaining(String content);
+
 }

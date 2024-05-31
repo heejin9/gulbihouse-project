@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -137,6 +137,7 @@
             border-radius: 4px;
             resize: none;
             margin-right: 10px;
+            margin-left: -10px;
         }
 
         .memo-add button {
@@ -261,6 +262,7 @@
             border-radius: 4px;
             resize: none;
             margin-right: 10px;
+            margin-left: -10px
         }
 
         .shopping-list-add button {
@@ -273,6 +275,37 @@
             cursor: pointer;
         }
 
+        .search-results {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            width: calc(100% - 10px); /* 검색창의 너비에 맞추기 */
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            top: 100%; /* 검색창 바로 아래에 위치 */
+        }
+
+        .search-results ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .search-results li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .search-results li:hover {
+            background-color: #f2f2f2;
+        }
+
+        .search-bar {
+            position: relative;
+        }
     </style>
 </head>
 
@@ -282,22 +315,26 @@
         <div class="logo">gulbi house</div>
         <div class="notification"><img src="images/Bell.png"></div>
     </div>
+
     <div class="search-bar">
         <span class="search-icon"><img src="/images/search.png"></span>
-        <input type="text" placeholder="Search">
+        <input type="text" id="search-input" placeholder="Search">
+        <div class="search-results" id="search-results">
+            <ul id="search-results-list"></ul>
+        </div>
     </div>
 
     <div class="note" style="background-color: #f2f2f2;">
         <h3>임박재료</h3>
         <ul id="expiring-ingredients-list">
-            <!-- Dynamic content will be injected here -->
+            <!-- 동적으로 내용이 삽입될 자리 -->
         </ul>
     </div>
 
     <div class="note" style="background-color: #f2f2f2;">
         <h3>장바구니</h3>
         <ul id="shopping-list" class="shopping-list">
-            <!-- Shopping items will be dynamically injected here -->
+            <!-- 쇼핑 항목들이 동적으로 삽입될 자리 -->
         </ul>
         <div class="shopping-list-add">
             <textarea id="new-item" placeholder="새 항목을 입력하세요"></textarea>
@@ -308,7 +345,7 @@
     <div class="memo">
         <h3>메모장 <span class="toggle-memo"><img src="/images/bb.png"></span></h3>
         <div id="memo-list">
-            <!-- Memos will be dynamically injected here -->
+            <!-- 메모들이 동적으로 삽입될 자리 -->
         </div>
         <div class="memo-add">
             <textarea id="new-memo" placeholder="새 메모를 입력하세요"></textarea>
@@ -529,6 +566,88 @@
                 .catch(error => console.error('Error deleting shopping item:', error));
             }
             $('.dropdown-menu').hide();
+        });
+
+        // 검색 기능
+        $('#search-input').on('input', function () {
+            const keyword = $(this).val();
+            if (keyword) {
+                fetch(`/api/search?keyword=${keyword}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const resultsList = $('#search-results-list');
+                        resultsList.empty();
+
+                        // 검색 결과가 없을 경우 메시지 표시
+                        if (
+                            data.ingredients.length === 0 &&
+                            data.memos.length === 0 &&
+                            data.shoppingItems.length === 0 &&
+                            data.events.length === 0 &&
+                            data.seasonalFoods.length === 0
+                        ) {
+                            resultsList.append('<li>검색 결과가 없습니다.</li>');
+                        } else {
+                            // 각 검색 결과를 리스트에 추가
+                            data.ingredients.forEach(item => {
+                                const listItem = $('<li>').text(item.content).on('click', function () {
+                                    $('#search-input').val(item.content);
+                                    $('#search-results').hide();
+                                });
+                                resultsList.append(listItem);
+                            });
+
+                            data.memos.forEach(item => {
+                                const listItem = $('<li>').text(item.content).on('click', function () {
+                                    $('#search-input').val(item.content);
+                                    $('#search-results').hide();
+                                });
+                                resultsList.append(listItem);
+                            });
+
+                            data.shoppingItems.forEach(item => {
+                                const listItem = $('<li>').text(item.content).on('click', function () {
+                                    $('#search-input').val(item.content);
+                                    $('#search-results').hide();
+                                });
+                                resultsList.append(listItem);
+                            });
+
+                            data.events.forEach(item => {
+                                const listItem = $('<li>').text(item.content).on('click', function () {
+                                    $('#search-input').val(item.content);
+                                    $('#search-results').hide();
+                                });
+                                resultsList.append(listItem);
+                            });
+
+                            data.seasonalFoods.forEach(item => {
+                                const listItem = $('<li>').text(item.content).on('click', function () {
+                                    $('#search-input').val(item.content);
+                                    $('#search-results').hide();
+                                });
+                                resultsList.append(listItem);
+                            });
+                        }
+
+                        $('#search-results').show();
+                    })
+                    .catch(error => console.error('Error fetching search results:', error));
+            } else {
+                $('#search-results').hide();
+            }
+        });
+
+        // 검색창 외부를 클릭하면 검색 결과 숨기기
+        $(document).click(function (e) {
+            if (!$(e.target).closest('.search-bar').length) {
+                $('#search-results').hide();
+            }
         });
     });
 </script>

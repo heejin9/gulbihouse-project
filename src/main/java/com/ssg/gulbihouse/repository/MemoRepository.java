@@ -9,4 +9,6 @@ import java.util.List;
 public interface MemoRepository extends JpaRepository<Memo, Long> {
     // 사용자 ID를 기반으로 메모 목록 조회
     List<Memo> findByUserId(Long userId);
+    List<Memo> findByContentContaining(String content);
+
 }

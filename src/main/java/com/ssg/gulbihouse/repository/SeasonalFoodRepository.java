@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface SeasonalFoodRepository extends JpaRepository<SeasonalFood, Long> {
     List<SeasonalFood> findByMonth(int month);
     Optional<SeasonalFood> findFirstByName(String name);  // findFirstByName 메서드 추가
+    List<SeasonalFood> findByNameContaining(String name);
+
 }

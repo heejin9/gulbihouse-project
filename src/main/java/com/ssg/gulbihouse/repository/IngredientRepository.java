@@ -9,4 +9,6 @@ import java.util.List;
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
     // 특정 사용자 ID로 식재료를 조회하는 메서드
     List<Ingredient> findByUserId(Long userId);
+    List<Ingredient> findByNameContaining(String name);
+
 }
