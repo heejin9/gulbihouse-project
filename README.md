@@ -1,8 +1,7 @@
 
 ![logo png](https://github.com/heejin9/gulbihouse-project/assets/152829380/07ec77c4-c2d8-464f-b084-dfca516381ea)
 
-### 프로젝트 개요![Uploading logo.png.png…]()
-
+### 프로젝트 개요
 
 ### 💡 프로젝트 주제 및 선정 배경
 
@@ -27,6 +26,7 @@
 - **BACKEND:** Java, Spring, Spring Boot, Spring Data JPA, Spring MVC, Spring Security
 - **DATABASE:** MySQL
 - **API:** Edamam Food Database API, FullCalendar, Spring Mail
+
 
 ### 🧩 **architecture**
 ![아키텍처 drawio](https://github.com/heejin9/gulbihouse-project/assets/152829380/db0e80e5-3355-4d8e-822a-b5ffae0134e8)
@@ -97,4 +97,5 @@
     [API 명세서_구희진.xlsx](https://docs.google.com/spreadsheets/d/1njFGO3Bu1ZK3mluHmGpUaDVdavb6zCow/edit?usp=sharing&ouid=100970501915328887484&rtpof=true&sd=true)
     
 - 프로젝트 발표 ppt & 시연 영상
+  
 [최종프로젝트 발표 PPT](https://www.canva.com/design/DAGHXRsH_UM/jMeHrtklOiE4Q2stqZbJ1w/edit?utm_content=DAGHXRsH_UM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
